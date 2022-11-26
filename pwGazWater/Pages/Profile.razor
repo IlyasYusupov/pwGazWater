@@ -1,0 +1,120 @@
+﻿@page "/profile"
+
+<PageTitle>Profile</PageTitle>
+
+@using pwGazWater.Data
+@inject IWebHostEnvironment Environment
+@using System.IO
+
+@inject NavigationManager manager
+@inject SingletonServise servise
+
+<section style="background-color: #eee;">
+        <div class="row">
+        <div class="col-lg-4" style="height: 350px">
+            <div class="card mb-4">
+                <div class="card-body text-center" style="height: 330px">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="avatar"
+              class="rounded-circle img-fluid" style="width: 200px;">
+                    <h5 class="my-3">@user.Login</h5>
+                    <div class="d-flex justify-content-center mb-2">
+                    </div>
+                </div>
+            </div>
+            </div>
+            if(user.GetType().Name == "Customer")
+            {
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Full name</p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="text-muted mb-0">@(user as Customer).FullName</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Email</p>
+                            </div>
+                            <div class="col-sm-9">
+                            <p class="text-muted mb-0">@user.Email</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <p class="mb-0">Phone number</p>
+                            </div>
+                            <div class="col-sm-9">
+                            <p class="text-muted mb-0">@user.PhoneNumber</p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Action
+                          </button>
+                          <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Separated link</a>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                }
+                <button type="button" id="LogOut"
+                    class="btn btn-danger" @onclick=LogOut>
+                Log out
+            </button>
+        </div>
+    </div>
+</section>
+
+@code {
+    private User user;
+
+    protected override void OnInitialized()
+    {
+        user = servise.GetUser();
+    }
+
+    private void LogOut()
+    {
+        servise.SetUser(null);
+        manager.NavigateTo("authorization");
+    }
+
+    //private async Task LoadFiles(InputFileChangeEventArgs e)
+    //{
+    //    var format = "image/*";
+    //    IBrowserFile file = e.File;
+    //    var path = Path.Combine(Environment.ContentRootPath,
+    //                "wwwroot", "unsafe",
+    //                file.Name);
+    //    var resizedImageFile = await file.RequestImageFileAsync(format, 250, 250);
+    //    var buffer = new byte[resizedImageFile.Size];
+    //    Stream stream = resizedImageFile.OpenReadStream();
+    //    await stream.ReadAsync(buffer);
+    //    var imageDataUrl = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
+    //    imageUrl = imageDataUrl;
+    //    //AddToDB(file);
+    //}
+
+    private void AddToDB(IBrowserFile file)
+    {
+        //FileSystemService fs = new FileSystemService();
+        //string path = Path.Combine(Environment.ContentRootPath,
+        //                "wwwroot", "unsafe",
+        //                file.Name);
+        //user.Photo = path;
+        //Mongo.UpgradeOne(user.Login, "Photo", path);
+        //fs.UploadImageToUserDb(file, path);
+    }
+}

@@ -1,0 +1,78 @@
+﻿@page "/authorization"
+
+<PageTitle>Authorization</PageTitle>
+
+@using pwGazWater.Data
+
+@inject NavigationManager manager
+@inject SingletonServise servise
+
+<section class="vh-100 bg-image"
+  style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-5">
+              <h2 class="text-uppercase text-center mb-5">Authorization an account</h2>
+
+              <form>
+                <div class="form-outline mb-4">
+                  <label class="form-label" for="form3Example1cg">Your Login</label>
+                  <input type="text" id="form3Example1cg" class="form-control form-control-lg" @bind-value=Login/>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <label class="form-label" for="form3Example4cg">Password</label>
+                  <input type="password" id="form3Example4cg" class="form-control form-control-lg" @bind-value=Password/>
+                </div>   
+                <div class="d-flex justify-content-center" >
+                  <button type="button" id="btnLog"
+                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" @onclick=SignIn>Log in</button>
+
+                  <button type="button" id="btnReg" margin="10"
+                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" @onclick=Registr>Registration</button>
+                </div>
+
+                @if (Error)
+                {
+                    <br><div class="alert alert-danger" role="alert">
+                        Неправильный пароль или логин!!!
+                    </div>
+                }
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+@code {
+    string Login = "";
+    string Password = "";
+    bool Error = false;
+
+    private void SignIn()
+    {
+        var users = Mongo.FindAll();
+        foreach (var user in users)
+        {
+            if(Login == user.Login && Password == user.Password)
+            {
+                servise.SetUser(user);
+                manager.NavigateTo("profile");
+            }
+            else
+            {
+                Error = true;
+            }
+        }
+    }
+    private void Registr()
+    {
+        manager.NavigateTo("registration");
+    }
+}

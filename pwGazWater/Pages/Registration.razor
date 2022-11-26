@@ -1,0 +1,152 @@
+﻿@page "/registration"
+
+<PageTitle>Registration</PageTitle>
+
+@using pwGazWater.Data
+
+@inject NavigationManager manager
+
+<section class="vh-100 bg-image"
+  style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
+  <div class="mask d-flex align-items-center h-100 gradient-custom-3">
+    <div class="container h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+          <div class="card" style="border-radius: 15px;">
+            <div class="card-body p-5">
+              <h2 class="text-uppercase text-center mb-5">Create an account</h2>
+
+              <form>
+                <div class="form-outline mb-4">
+                  <label class="form-label" for="form3Example1cg">Your Login</label>
+                  <input type="text" id="form3Example1cg" class="form-control form-control-lg" @bind-value=Login/>
+                </div>
+                <div class="form-outline mb-4">
+                  <label class="form-label" for="form3Example1cg">Your phone number</label>
+                  <input type="text" id="form3Example1cg" class="form-control form-control-lg" @bind-value=PhoneNumber />
+                </div>
+                
+                <div class="form-outline mb-4">
+                  <label class="form-label" for="form3Example3cg">Your Email</label>
+                  <input type="email" id="form3Example3cg" class="form-control form-control-lg" @bind-value=Email/>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <label class="form-label" for="form3Example4cg">Password</label>
+                  <input type="password" id="form3Example4cg" class="form-control form-control-lg" @bind-value=Password/>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <label class="form-label" for="form3Example4cdg">Repeat your password</label>
+                  <input type="password" id="form3Example4cdg" class="form-control form-control-lg"  @bind-value=RepeatPassword/>
+                </div>
+
+                <div class="form-outline mb-4">
+
+                 <select @bind=JobTitle
+                     class="form-control" height=500>
+                    <option value="Customer">Customer</option>
+                    <option value="Developer">Developer</option>
+                    <option value="Planner">Planner</option>
+                  </select>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                  <button type="button"
+                    class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" @onclick=RegistrClick>Register</button>
+                </div>
+                @if (Error)
+                {
+                    <br><div class="alert alert-danger" role="alert">
+                        @ErrorText
+                    </div>
+                }
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+@code {
+    string Login = "";
+    string PhoneNumber = "";
+    string Email = "";
+    string Password = "";
+    string RepeatPassword = "";
+    bool Error = false;
+    string ErrorText = "";
+    string JobTitle = "";
+
+
+    private void RegistrClick()
+    {
+        var users = Mongo.FindAll();
+        foreach(var user in users)
+        {
+            if (Login == user.Login)
+            {
+                Error = true;
+                ErrorText = "Такой логин уже есть!";
+                return;
+            }
+            else{
+                Error = false;
+            }
+        }
+        if(Password != RepeatPassword)
+        {
+            Error = true;
+            ErrorText = "Пароль не сходится";
+            return;
+        }
+        else
+        {
+            Error = false;
+        }
+        if (Login != "" && PhoneNumber != "" && Email != "" && Password != "" && RepeatPassword != "")
+        {
+            User user = null;
+            switch (JobTitle)
+            {
+                case "Customer":
+                    user = new Customer(Login, PhoneNumber, Email, Password);
+                    break;
+
+                case "Developer":
+                    user = new Developer(Login, PhoneNumber, Email, Password);
+                    break;
+
+                case "Planner":
+                    user = new Planner(Login, PhoneNumber, Email, Password);
+                    break;
+            }
+            Mongo.AddToDB(user);
+            manager.NavigateTo("authorization");
+        }
+        else
+        {
+            Error = true;
+            ErrorText = "Заполните все данные!";
+            return;
+        }
+    }
+
+    private void CheckNumber(KeyboardEventArgs e)
+    {
+        foreach(char i in PhoneNumber)
+        {
+            if(i <= '9' &&  i >= '0')
+            {
+                Error = true;
+                ErrorText = "adskjaskdja";
+            }
+            else
+            {
+                Error = false;
+            }
+        }
+    }
+}
