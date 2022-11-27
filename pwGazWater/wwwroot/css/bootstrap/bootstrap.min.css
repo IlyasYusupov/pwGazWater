@@ -9,7 +9,16 @@
     margin-left: 15px;
 }
 
+#btnProfil {
+    margin-left: 76%;
+    margin-bottom: 2%;
+}
+
+#btnProf {
+    margin-left: 2%;
+}
+
 #LogOut {
     margin-left: 90%;
-    margin-top: 6%;
+    margin-bottom: 2%;
 }

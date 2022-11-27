@@ -10,21 +10,23 @@ namespace pwGazWater.Data
 
         }
 
-        [BsonId]
-        [BsonIgnoreIfDefault]
-        ObjectId _id;
-
+        [BsonIgnoreIfNull]
         public string NameOrganization { get; set; }
 
+        [BsonIgnoreIfNull]
         public string OGRN { get; set; }
 
+        [BsonIgnoreIfNull]
         public string TIN { get; set; }
 
+        [BsonIgnoreIfNull]
         public string KPP { get; set; }
 
+        [BsonIgnoreIfNull]
         public string NameDirecor { get; set; }
 
-        public string NmaeChiefEngineer { get; set; }
+        [BsonIgnoreIfNull]
+        public string NameChiefEngineer { get; set; }
 
     }
 }

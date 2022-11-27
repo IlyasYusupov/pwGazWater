@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver.GridFS;
-using DnsClient;
+using pwGazWater.Data;
 
 namespace pwGazWater.Data
 {
@@ -21,12 +21,12 @@ namespace pwGazWater.Data
             collection.InsertOne(user);
         }
 
-        public static User Find(string name)
+        public static User Find(string login)
         {
             var client = new MongoClient();
             var database = client.GetDatabase("UserBaseGuz");
             var collection = database.GetCollection<User>("User");
-            var one = collection.Find(x => x.Login == name).FirstOrDefault();
+            var one = collection.Find(x => x.Login == login).FirstOrDefault();
             return one;
         }
 
@@ -38,11 +38,18 @@ namespace pwGazWater.Data
             var list = collection.Find(x => true).ToList();
             var users = new List<User>();
             foreach (var user in list)
-            {
                 users.Add(user);
-            }
             return users;
         }
+
+        public static void Replace(string login, User user)
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<User>("User");
+            collection.ReplaceOne(z => z.Login == login, user);
+        }
+
 
         public static void UpgradeOne(string login, string seting, string item)
         {

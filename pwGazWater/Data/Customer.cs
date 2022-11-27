@@ -6,16 +6,12 @@ namespace pwGazWater.Data
     public class Customer : User
     {
         public Customer(string login, string phoneNumber, string email, string password) : base (login, phoneNumber, email, password)
-        {
+        { }
 
-        }
-
-        [BsonId]
-        [BsonIgnoreIfDefault]
-        ObjectId _id;
-
+        [BsonIgnoreIfNull]
         public string FullName { get; set; }
 
+        [BsonIgnoreIfNull]
         public string Department { get; set; }
 
     }

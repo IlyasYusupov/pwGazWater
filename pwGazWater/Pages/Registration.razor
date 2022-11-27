@@ -3,6 +3,7 @@
 <PageTitle>Registration</PageTitle>
 
 @using pwGazWater.Data
+@using System.Text.RegularExpressions;
 
 @inject NavigationManager manager
 
@@ -23,7 +24,7 @@
                 </div>
                 <div class="form-outline mb-4">
                   <label class="form-label" for="form3Example1cg">Your phone number</label>
-                  <input type="text" id="form3Example1cg" class="form-control form-control-lg" @bind-value=PhoneNumber />
+                  <input type="text" maxlength="11" id="form3Example1cg" class="form-control form-control-lg" @bind-value=PhoneNumber onkeyup="this.value = this.value.replace(/[^0-9]/ig, '')" />
                 </div>
                 
                 <div class="form-outline mb-4">
@@ -38,13 +39,13 @@
 
                 <div class="form-outline mb-4">
                   <label class="form-label" for="form3Example4cdg">Repeat your password</label>
-                  <input type="password" id="form3Example4cdg" class="form-control form-control-lg"  @bind-value=RepeatPassword/>
+                  <input type="password" id="form3Example4cdg" class="form-control form-control-lg" @bind-value=RepeatPassword/>
                 </div>
 
                 <div class="form-outline mb-4">
-
+                <label class="form-label" for="form3Example4cdg">Your position </label>
                  <select @bind=JobTitle
-                     class="form-control" height=500>
+                     class="form-control">
                     <option value="Customer">Customer</option>
                     <option value="Developer">Developer</option>
                     <option value="Planner">Planner</option>
@@ -106,7 +107,7 @@
         {
             Error = false;
         }
-        if (Login != "" && PhoneNumber != "" && Email != "" && Password != "" && RepeatPassword != "")
+        if (Login != "" && (PhoneNumber != "" && PhoneNumber.Length == 11) && Email != "" && Password != "" && RepeatPassword != "" && JobTitle != "")
         {
             User user = null;
             switch (JobTitle)
@@ -131,22 +132,6 @@
             Error = true;
             ErrorText = "Заполните все данные!";
             return;
-        }
-    }
-
-    private void CheckNumber(KeyboardEventArgs e)
-    {
-        foreach(char i in PhoneNumber)
-        {
-            if(i <= '9' &&  i >= '0')
-            {
-                Error = true;
-                ErrorText = "adskjaskdja";
-            }
-            else
-            {
-                Error = false;
-            }
         }
     }
 }
