@@ -9,6 +9,16 @@
     margin-left: 15px;
 }
 
+#Select {
+    width: 360px;
+}
+
+#SelectElement {
+    margin-left: 67.7%;
+    width: 81%;
+}
+
+
 #btnProfil {
     margin-left: 76%;
     margin-bottom: 2%;

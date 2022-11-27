@@ -37,13 +37,19 @@
             </div>
             <hr>
             <div class="row">
-                <div class="col-sm-3">
-                    <p class="mb-0">Department</p>
+                    <div class="d-flex justify-content-center" id="Select">
+                    <div class="col-sm-3">
+                        <p class="mb-0">Department</p>
+                    </div>
+                        <div class="col-sm-9">
+                            <select @bind=Department
+                            class="form-control" id="SelectElement">
+                            <option value="Gasification">Gasification</option>
+                            <option value="waterSupply">Water supply</option>
+                        </select>
+                    </div>
+                    </div>
                 </div>
-                <div class="col-sm-9">
-                    <input type="text" class="text-muted mb-0" @bind-value=Department />
-                </div>
-            </div>
             <hr>
         }
         @if (user.GetType().Name == "Developer")
@@ -203,7 +209,7 @@
     string OGRNDeveloper = string.Empty;
     string TINDeveloper = string.Empty;
     string KPPDeveloper = string.Empty;
-    string OGRNPlanner = "";
+    string OGRNPlanner = string.Empty;
     string TINPlanner = string.Empty;
     string KPPPlanner = string.Empty;
     string Address = string.Empty;
@@ -252,56 +258,61 @@
         switch (user.GetType().Name)
         {
             case "Customer":
-                if (PhoneNumber != string.Empty && PhoneNumber.Length != 11)
-                {
-                    Error = true;
-                    ErrorText = "Неверный формат ввода!";
-                    return;
-                }
-                else
-                {
-                    Error = false;
+                //if (PhoneNumber != string.Empty && PhoneNumber.Length != 11)
+                //{
+                //    Error = true;
+                //    ErrorText = "Неверный формат ввода!";
+                //    return;
+                //}
+                //else
+                //{
+                //    Error = false;
                     newUser = new Customer(user.Login, PhoneNumber, Email, user.Password)
                     {
-                        FullName = this.FullName,
+                        FullName = this.FullName ,
                         Department = this.Department,
                     };
-                }
+                //}
                 break;
             case "Developer":
-                if ((OGRNDeveloper != string.Empty && OGRNDeveloper.Length != 13) || (PhoneNumber != string.Empty && PhoneNumber.Length != 11) ||
-                    (TINDeveloper != string.Empty && TINDeveloper.Length != 10) || (KPPDeveloper != string.Empty && KPPDeveloper.Length != 9))
-                {
-                    Error = true;
-                    ErrorText = "Неверный формат ввода!";
-                    return;
-                }
-                else
-                {
-                    Error = false;
+                //if (OGRNDeveloper == null || TINDeveloper == null || KPPDeveloper == null)
+                //{
+                    
+                //}
+
+                //if ((OGRNDeveloper != string.Empty && OGRNDeveloper.Length != 13) || (PhoneNumber != string.Empty && PhoneNumber.Length != 11) ||
+                //    (TINDeveloper != string.Empty && TINDeveloper.Length != 10) || (KPPDeveloper != string.Empty && KPPDeveloper.Length != 9))
+                //{
+                //    Error = true;
+                //    ErrorText = "Неверный формат ввода!";
+                //    return;
+                //}
+                //else
+                //{
+                    //Error = false;
                     newUser = new Developer(user.Login, PhoneNumber, Email, user.Password)
                         {
                             Name = this.Name,
-                            OGRN = OGRNDeveloper,
-                            TIN = TINDeveloper,
-                            KPP = KPPDeveloper,
+                            OGRN = this.OGRNDeveloper,
+                            TIN = this.TINDeveloper,
+                            KPP = this.KPPDeveloper,
                             Address = this.Address,
                             HeadName = this.HeadName,
                         };
-                }
+                //}
 
                 break;
 
             case "Planner":
-                if ((OGRNPlanner != string.Empty && OGRNPlanner.Length != 13) || (PhoneNumber != string.Empty && PhoneNumber.Length != 11) ||
-                    (TINPlanner != string.Empty && TINPlanner.Length != 10) || (KPPPlanner != string.Empty && KPPPlanner.Length != 9))
-                {
-                    Error = true;
-                    ErrorText = "Неверный формат ввода!";
-                    return;
-                }
-                else
-                {
+                //if ((OGRNPlanner != string.Empty && OGRNPlanner.Length != 13) || (PhoneNumber != string.Empty && PhoneNumber.Length != 11) ||
+                //    (TINPlanner != string.Empty && TINPlanner.Length != 10) || (KPPPlanner != string.Empty && KPPPlanner.Length != 9))
+                //{
+                //    Error = true;
+                //    ErrorText = "Неверный формат ввода!";
+                //    return;
+                //}
+                //else
+                //{
                     Error = false;
                     newUser = new Planner(user.Login, PhoneNumber, Email, user.Password)
                     {
@@ -312,7 +323,7 @@
                         NameDirecor = this.NameDirecor,
                         NameChiefEngineer = this.NameChiefEngineer,
                     };
-                }
+                //}
                 break;
         }
         Mongo.Replace(user.Login, newUser);
