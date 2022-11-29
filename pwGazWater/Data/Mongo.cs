@@ -29,36 +29,6 @@ namespace pwGazWater.Data
             var one = collection.Find(x => x.Login == login).FirstOrDefault();
             return one;
         }
-        public static List<User> FindAllPlanner()
-        {
-            var client = new MongoClient();
-            var database = client.GetDatabase("UserBaseGuz");
-            var collection = database.GetCollection<User>("User");
-            var list = collection.Find(x => true).ToList();
-            var users = new List<User>();
-            foreach (var user in list)
-            {
-                if (user.GetType().Name == "Planner")
-                    users.Add(user);
-            }
-            return users;
-        }
-
-
-        public static List<User> FindAllDeveloper()
-        {
-            var client = new MongoClient();
-            var database = client.GetDatabase("UserBaseGuz");
-            var collection = database.GetCollection<User>("User");
-            var list = collection.Find(x => true).ToList();
-            var users = new List<User>();
-            foreach (var user in list)
-            {
-                if(user.GetType().Name == "Developer")
-                    users.Add(user);
-            }
-            return users;
-        }
 
         public static List<User> FindAll()
         {
@@ -89,5 +59,104 @@ namespace pwGazWater.Data
             var update = Builders<User>.Update.Set(seting, item);
             collection.UpdateOne(x => x.Login == login, update);
         }
+
+        public static void AddProjectToDB(Project project)
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<Project>("project");
+            collection.InsertOne(project);
+        }
+
+        public static List<Project> FindAllDeveloperProject(string login)
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<Project>("project");
+            var list = collection.Find(x => x.Developer.Login == login).ToList();
+            var projects = new List<Project>();
+            foreach (var project in list)
+            {
+                projects.Add(project);
+            }
+            return projects;
+        }
+
+        public static List<Project> FindAllPlannerProject(string login)
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<Project>("project");
+            var list = collection.Find(x => x.Planner.Login == login).ToList();
+            var projects = new List<Project>();
+            foreach (var project in list)
+            {
+                projects.Add(project);
+            }
+            return projects;
+        }
+
+        public static List<Project> FindAllGasificationProject()
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<Project>("project");
+            var list = collection.Find(x => true).ToList();
+            var projects = new List<Project>();
+            foreach (var project in list)
+            {
+                if(project.Type == "Gasification")
+                    projects.Add(project);
+            }
+            return projects;
+        }
+
+        public static List<Project> FindAllWaterSupplyProject()
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<Project>("project");
+            var list = collection.Find(x => true).ToList();
+            var projects = new List<Project>();
+            foreach (var project in list)
+            {
+                if (project.Type == "Water supply")
+                    projects.Add(project);
+            }
+            return projects;
+        }
+
+
+        public static List<User> FindAllPlanner()
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<User>("User");
+            var list = collection.Find(x => true).ToList();
+            var users = new List<User>();
+            foreach (var user in list)
+            {
+                if (user.GetType().Name == "Planner")
+                    users.Add(user);
+            }
+            return users;
+        }
+
+        public static List<User> FindAllDeveloper()
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<User>("User");
+            var list = collection.Find(x => true).ToList();
+            var users = new List<User>();
+            foreach (var user in list)
+            {
+                if(user.GetType().Name == "Developer")
+                    users.Add(user);
+            }
+            return users;
+        }
+
+
     }
 }

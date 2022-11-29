@@ -1,10 +1,8 @@
-﻿@page "/project"
+﻿@page "/profile"
 
 <PageTitle>Profile</PageTitle>
 
 @using pwGazWater.Data
-@inject IWebHostEnvironment Environment
-@using System.IO
 
 @inject NavigationManager manager
 @inject SingletonServise servise
@@ -191,14 +189,35 @@
             </div>
         </div>
     </div>
+    <button type="button" id="btnProf"
+            class="btn btn-saccess" @onclick=Projects>
+        Projects
+    </button>
 </section>
 
 @code {
     private User user;
-    
+
     protected override void OnInitialized()
     {
         user = servise.GetUser();
+    }
+
+    private void Projects()
+    {
+        switch (user.GetType().Name)
+        {
+            case "Customer":
+                manager.NavigateTo("projectCustomer");
+            break;
+            case "Developer":
+                manager.NavigateTo("projectDeveloperPlanner");
+                break;
+            case "Planner":
+                manager.NavigateTo("projectDeveloperPlanner");
+                break;
+        }
+        
     }
 
     private void LogOut()
@@ -210,32 +229,5 @@
     private void Editing()
     {
         manager.NavigateTo("editing");
-    }
-
-    //private async Task LoadFiles(InputFileChangeEventArgs e)
-    //{
-    //    var format = "image/*";
-    //    IBrowserFile file = e.File;
-    //    var path = Path.Combine(Environment.ContentRootPath,
-    //                "wwwroot", "unsafe",
-    //                file.Name);
-    //    var resizedImageFile = await file.RequestImageFileAsync(format, 250, 250);
-    //    var buffer = new byte[resizedImageFile.Size];
-    //    Stream stream = resizedImageFile.OpenReadStream();
-    //    await stream.ReadAsync(buffer);
-    //    var imageDataUrl = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
-    //    imageUrl = imageDataUrl;
-    //    //AddToDB(file);
-    //}
-
-    private void AddToDB(IBrowserFile file)
-    {
-        //FileSystemService fs = new FileSystemService();
-        //string path = Path.Combine(Environment.ContentRootPath,
-        //                "wwwroot", "unsafe",
-        //                file.Name);
-        //user.Photo = path;
-        //Mongo.UpgradeOne(user.Login, "Photo", path);
-        //fs.UploadImageToUserDb(file, path);
     }
 }

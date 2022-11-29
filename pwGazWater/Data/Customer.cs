@@ -15,10 +15,10 @@ namespace pwGazWater.Data
         public string Department { get; set; }
 
         [BsonIgnoreIfNull]
-        public static List<Project> ProjectGasification = new List<Project>();
+        public List<Project> ProjectGasification = new List<Project>();
 
         [BsonIgnoreIfNull]
-        public static List<Project> ProjectWaterSupply = new List<Project>();
+        public List<Project> ProjectWaterSupply = new List<Project>();
 
     }
 }

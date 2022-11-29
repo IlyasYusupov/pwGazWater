@@ -26,8 +26,8 @@
                 {
                     <tr>
                         <td>@project.Name</td>
-                        <td>@project.Developer</td>
-                        <td>@project.Planner</td>
+                        <td>@project.Developer.Login</td>
+                        <td>@project.Planner.Login</td>
                         <td>
                             <button type="button" class="btn btn-info" @onclick=CheckProject>Open project</button>
                         </td>
@@ -37,18 +37,22 @@
         </table>
         <button type="button" class="btn btn-success" @onclick=CreateProject>Create project</button>
 }
-@else 
+else 
 {
-        <p>
-        <label>
-            Заполните все данные!
-        </label>
+    <p>
+        <h1>Заполните все данные в Вашем профиле!</h1>
     </p>
 }
 
 
 @code {
-    Customer customer = servise.GetUser();
+    Customer customer;
+
+    protected override void OnInitialized()
+    {
+        customer = servise.GetUser() as Customer;
+
+    }
 
     private void CreateProject()
     {
@@ -57,18 +61,18 @@
 
     private void CheckProject()
     {
-        manager.NavigateTo();
+        //manager.NavigateTo("");
     }
 
     private List<Project> GetProjects()
     {
         if (customer.Department == "Gasification")
         {
-            return Customer.ProjectGasification; 
+            return Mongo.FindAllGasificationProject(); 
         }
         else
         {
-            return Customer.ProjectWaterSupply;
+            return Mongo.FindAllWaterSupplyProject();
         }
     }
 
@@ -81,36 +85,6 @@
         }
         return true;
     }
-
-
-
-
-    //private async Task LoadFiles(InputFileChangeEventArgs e)
-    //{
-    //    isLoading = true;
-    //    if (e.FileCount > maxAllowedFiles || e.FileCount < maxAllowedFiles)
-    //        return;
-    //    foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
-    //    {
-    //        loadedFiles.Add(file);
-    //        var path = Path.Combine(Environment.ContentRootPath,
-    //                "wwwroot", "unsafe",
-    //                file.Name);
-    //        await using FileStream fs = new(path, FileMode.Create);
-    //        await file.OpenReadStream(10000000000000).CopyToAsync(fs);
-    //    }
-    //    isLoading = false;
-    //}
-
-    //private void AddToDB(IBrowserFile file)
-    //{
-    //    FileSystemService fs = new FileSystemService();
-    //    string path = Path.Combine(Environment.ContentRootPath,
-    //                    "wwwroot", "unsafe",
-    //                    file.Name);
-    //    fs.UploadImageToDb(file, path);
-    //    loadedFiles.Remove(file);
-    //}
 }
 
 

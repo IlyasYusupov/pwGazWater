@@ -1,22 +1,19 @@
 ﻿@page "/projectWaterSupply"
 
 @using Microsoft.Extensions.Logging
+@using pwGazWater.Data
+
 @inject IWebHostEnvironment Environment
+@inject SingletonServise servise
+@inject NavigationManager manager
 
-@*<h3>Upload file</h3>
 
-
-<p>
-    <label>
-        Upload u files:
-        <InputFile OnChange="LoadFiles" multiple />
-    </label>
-</p>
     <table class="table"> 
         <thead>
             <tr>
                 <th>Documents name</th>
-                <th>Save</th>
+                <th>Select file</th>
+                <th>Add to DB</th>
                 <th>Delete</th>
                 <th>Load</th>
             </tr>
@@ -24,11 +21,12 @@
         <tbody>
             <tr>
                 <td>Акт обследования и выбора трассы сети водоснабжения</td>
-                <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB(file)">Save</button> </td>
-                <td> <button type="button" class="btn btn-danger" @onclick="() => Delet(file)">delet</button> </td>
-                <td> <button type="button" class="btn btn-info" @onclick="() => AddToDB(file)">Load</button></td>
+                <td> <InputFile OnChange="LoadFiles" multiple /> </td>
+                <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB()">Add</button> </td>
+                <td> <button type="button" class="btn btn-danger" @onclick="() => Delete()">delet</button> </td>
+                <td> <button type="button" class="btn btn-info">Load</button></td>
             </tr>
-            <tr>
+        @*<tr>
                 <td>Акт обследования и выбора места под проектируемую скважину</td>
                 <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB(file)">Save</button> </td>
                 <td> <button type="button" class="btn btn-danger" @onclick="() => AddToDB(file)">delet</button> </td>
@@ -99,42 +97,63 @@
                 <td>
                     <button type="button" class="btn btn-info" @onclick="() => AddToDB(file)">Load</button>
                 </td>
-            </tr>
+        </tr>*@
         </tbody>
     </table>
 
-*@
+
 @code {
-    //private List<IBrowserFile> loadedFiles = new List<IBrowserFile>();
-    //private bool isLoading;
-    //int maxAllowedFiles = 1;
+    private List<IBrowserFile> loadedFiles = new List<IBrowserFile>();
+    private bool isLoading;
+    int maxAllowedFiles = 1;
+    User user;
 
-    //private async Task LoadFiles(InputFileChangeEventArgs e)
-    //{
-    //    isLoading = true;
-    //    if (e.FileCount > maxAllowedFiles || e.FileCount < maxAllowedFiles)
-    //        return;
-    //    foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
-    //    {
-    //        loadedFiles.Add(file);
-    //        var path = Path.Combine(Environment.ContentRootPath,
-    //                "wwwroot", "unsafe",
-    //                file.Name);
-    //        await using FileStream fs = new(path, FileMode.Create);
-    //        await file.OpenReadStream(10000000000000).CopyToAsync(fs);
-    //    }
-    //    isLoading = false;
-    //}
+    protected override void OnInitialized()
+    {
+        switch (servise.GetUser().GetType().Name)
+        {
+            case "Developer":
+                user = servise.GetUser() as Developer;
+                break;
+            case "Planner":
+                user = servise.GetUser() as Planner;
+                break;
+        }
+    }
 
-    //private void AddToDB(IBrowserFile file)
-    //{
-    //    FileSystemService fs = new FileSystemService();
-    //    string path = Path.Combine(Environment.ContentRootPath,
-    //                    "wwwroot", "unsafe",
-    //                    file.Name);
-    //    fs.UploadImageToDb(file, path);
-    //    loadedFiles.Remove(file);
-    //}
+
+    private async Task LoadFiles(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+        if (e.FileCount > maxAllowedFiles || e.FileCount < maxAllowedFiles)
+            return;
+        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        {
+            loadedFiles.Add(file);
+            var path = Path.Combine(Environment.ContentRootPath,
+                    "wwwroot", "unsafe",
+                    file.Name);
+            await using FileStream fs = new(path, FileMode.Create);
+            await file.OpenReadStream(10000000000000).CopyToAsync(fs);
+        }
+        isLoading = false;
+    }
+
+    private void Delete()
+    {
+        
+    }
+
+
+    private void AddToDB(/*IBrowserFile file*/)
+    {
+        //FileSystemService fs = new FileSystemService();
+        //string path = Path.Combine(Environment.ContentRootPath,
+        //                "wwwroot", "unsafe",
+        //                file.Name);
+        //fs.UploadImageToDb(file, path);
+        //loadedFiles.Remove(file);
+    }
 }
 
 

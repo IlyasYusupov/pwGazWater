@@ -7,7 +7,7 @@ namespace pwGazWater.Data
 {
     public class Project
     {
-        public Project(string name, string type, Developer developer, Planner planner)
+        public Project(string name, string type, User developer, User planner)
         {
             Name = name;
             Type = type;
@@ -23,12 +23,9 @@ namespace pwGazWater.Data
 
         public string Type { get; set; }
 
-        public Developer Developer { get; set; }
+        public User Developer { get; set; }
 
-        public Planner Planner { get; set; }
-
-        [BsonIgnoreIfNull]
-        public string Document { get; set; }
+        public User Planner { get; set; }
 
     }
 }

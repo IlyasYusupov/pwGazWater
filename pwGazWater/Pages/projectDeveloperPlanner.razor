@@ -1,0 +1,136 @@
+﻿@page "/projectDeveloperPlanner"
+
+@using Microsoft.Extensions.Logging
+@using pwGazWater.Data
+@inject SingletonServise servise
+@inject NavigationManager manager
+
+@if (user.GetType().Name == "Developer")
+{
+    @if (CheckInfo())
+    {
+        <p>
+            <label>
+                Застройщик @((user as Developer).HeadName)
+            </label>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Project name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var project in GetProjects())
+                {
+                    <tr>
+                        <td>@project.Name</td>
+                        <td>
+                            <button type="button" class="btn btn-info" @onclick=CheckProject>Open project</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+else if (user.GetType().Name == "Planner")
+{
+    @if (CheckInfo())
+    {
+        <p>
+            <label>
+                Плфнировщик @((user as Planner).NameDirecor)
+            </label>
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Project name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var project in GetProjects())
+                {
+                    <tr>
+                        <td>@project.Name</td>
+                        <td>
+                            <button type="button" class="btn btn-info" @onclick=CheckProject>Open project</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+else
+{
+    <p>
+        <h1>Заполните все данные в Вашем профиле!</h1>
+    </p>
+}
+
+
+@code {
+    User user;
+
+    protected override void OnInitialized()
+    {
+        switch (servise.GetUser().GetType().Name)
+        {
+            case "Developer":
+                user = servise.GetUser() as Developer;
+                break;
+            case "Planner":
+                user = servise.GetUser() as Planner;
+                break;
+        }
+    }
+
+    private void CheckProject()
+    {
+        manager.NavigateTo("projectWaterSupply");
+    }
+
+    private List<Project> GetProjects()
+    {
+        switch (user.GetType().Name)
+        {
+            case "Developer":
+                return Mongo.FindAllDeveloperProject(user.Login);
+            case "Planner":
+                return Mongo.FindAllPlannerProject(user.Login);
+        }
+        return null;
+    }
+
+    private bool CheckInfo()
+    {
+        switch (user.GetType().Name)
+        {
+            case "Developer":
+                if (((user as Developer).HeadName == null || (user as Developer).HeadName == string.Empty) || (user.PhoneNumber == null || user.PhoneNumber == string.Empty)
+                || (user.Email == null || user.Email == string.Empty) || ((user as Developer).Name == null || (user as Developer).Name == string.Empty)
+                || ((user as Developer).OGRN == null || (user as Developer).OGRN == string.Empty) || ((user as Developer).TIN == null || (user as Developer).TIN == string.Empty)
+                || ((user as Developer).KPP == null || (user as Developer).KPP == string.Empty) || ((user as Developer).Address == null || (user as Developer).Address == string.Empty))
+                {
+                    return false;
+                }
+                break;
+            case "Planner":
+                if (((user as Planner).NameOrganization == null || (user as Planner).NameOrganization == string.Empty) || (user.PhoneNumber == null || user.PhoneNumber == string.Empty)
+                    || (user.Email == null || user.Email == string.Empty) || ((user as Planner).NameDirecor == null || (user as Planner).NameDirecor == string.Empty)
+                    || ((user as Planner).OGRN == null || (user as Planner).OGRN == string.Empty) || ((user as Planner).TIN == null || (user as Planner).TIN == string.Empty)
+                    || ((user as Planner).KPP == null || (user as Planner).KPP == string.Empty) || ((user as Planner).NameChiefEngineer == null || (user as Planner).NameChiefEngineer == string.Empty))
+                {
+                    return false;
+                }
+                break;
+        }
+        return true;
+    }
+}
+
+

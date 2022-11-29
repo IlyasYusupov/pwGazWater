@@ -6,6 +6,7 @@
 @using System.Text.RegularExpressions;
 
 @inject NavigationManager manager
+@inject SingletonServise servise
 
 <section class="vh-100 bg-image"
   style="background-image: url('https://mdbcdn.b-cdn.net/img/Photos/new-templates/search-box/img4.webp');">
@@ -140,6 +141,7 @@
                     break;
             }
             Mongo.AddToDB(user);
+            servise.SetUser(user);
             manager.NavigateTo("authorization");
         }
         else

@@ -7,63 +7,88 @@
 @inject NavigationManager manager
 @inject SingletonServise servise
 
-<section style="background-color: #eee;">
-    <p>
-        <label>
-            Создание проекта 
-            @*<InputFile OnChange="LoadFiles" multiple />*@
-        </label>
-    </p>
-    <input type="text" class="text-muted mb-0" @bind-value=projectName />
+<p>
     <label>
-        @((user as Customer).Department)
+        Создание проекта
     </label>
-    <label> Select Developer </label>
-    <select @bind=developer class="form-control" >
-        @foreach (var i in Mongo.FindAllDeveloper())
-        {
-            <option value="@i.Login">@i.Login</option>
-        }
-    </select>
-    <select @bind=developer class="form-control" >
-        @foreach (var i in Mongo.FindAllPlanner())
-        {
-            <option value="@i.Login">@i.Login</option>
-        }
-    </select>
+</p>
+<section style="background-color: #eee;">
+    <div>
+    <label> Название проекта: </label>
+    <input type="text" class="text-muted mb-0" @bind-value=projectName /><br><br>
 
+    <label class="text-muted mb-0"> Отрасль: @((user as Customer).Department) </label><br><br>
+
+    <label>Select Developer </label>
+        <select @bind=developer >
+        <option></option>
+        @foreach (var i in developers)
+        {
+            <option value=@i.Login>@i.Login</option>
+        }
+        </select><br><br>
+
+    <label>Select planner </label>
+    <select @bind=planner >
+        <option></option>
+        @foreach (var i in planners)
+        {
+            <option value="@i.Login">@i.Login</option>
+        }
+    </select><br><br>
 
     <button type="button" id="btnProf"
                         class="btn btn-success" @onclick=CreateProject>
                     Create project
-    </button>
+        </button><br>
+    @if (Error)
+    {
+         <br>
+        <div class="alert alert-danger" role="alert">
+            @ErrorText
+        </div>
+    }
+    </div>
 </section>
 
 @code {
     User user;
     string projectName;
-    Developer developer;
-    Planner planner;
-    private bool isLoading;
-
+    string developer;
+    string planner;
+    List<User> developers;
+    List<User> planners;
+    bool Error;
+    string ErrorText;
 
     protected override void OnInitialized()
     {
+        developers = Mongo.FindAllDeveloper();
+        planners = Mongo.FindAllPlanner();
         user = servise.GetUser();
     }
 
     private void CreateProject()
     {
-        Project project = new Project(projectName, (user as Customer).Department, developer, planner);
+        if (developer == null || developer == string.Empty || planner == null || planner == string.Empty
+            || projectName == null || projectName == string.Empty)
+        {
+            Error = true;
+            ErrorText = "Введите все данные";
+            return;
+        }
+        Project project = new Project(projectName, (user as Customer).Department, Mongo.Find(developer), Mongo.Find(planner));
         servise.SetProject(project);
         if (project.Type == "Gasification")
         {
-            Customer.ProjectGasification.Add(project);
+            (user as Customer).ProjectGasification.Add(project);
         }
         else
         {
-            Customer.ProjectWaterSupply.Add(project);
+            (user as Customer).ProjectWaterSupply.Add(project);
         }
-        manager.NavigateTo("/");
+        ((Mongo.Find(developer)) as Developer).Projects.Add(project);
+        Mongo.AddProjectToDB(project);
+        manager.NavigateTo("projectCustomer");
     }
 }

@@ -3,10 +3,26 @@
 @inject NavigationManager manager
 
 <PageTitle>Index</PageTitle>
+@using pwGazWater.Data
+@inject SingletonServise servise
 
-<h1>Hello, world!</h1>
+@if (user != null)
+{
+        <h1>Hello, @user.Login!</h1>
+}
+else
+{
+        <h1>Hello, world!</h1>
+        <a href="authorization">Authorization</a>
+}
 
-Welcome to your new app.
+@code {
+    private User user;
 
+    protected override void OnInitialized()
+    {
+        user = servise.GetUser();
+    }
+}
 
 

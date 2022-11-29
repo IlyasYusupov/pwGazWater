@@ -28,5 +28,7 @@ namespace pwGazWater.Data
         [BsonIgnoreIfNull]
         public string HeadName { get; set; }
 
+        [BsonIgnoreIfNull]
+        public List<Project> Projects = new List<Project>();
     }
 }
