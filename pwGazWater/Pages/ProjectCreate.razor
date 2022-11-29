@@ -1,0 +1,69 @@
+﻿@page "/projectCreate"
+
+<PageTitle>Profile</PageTitle>
+
+@using pwGazWater.Data
+
+@inject NavigationManager manager
+@inject SingletonServise servise
+
+<section style="background-color: #eee;">
+    <p>
+        <label>
+            Создание проекта 
+            @*<InputFile OnChange="LoadFiles" multiple />*@
+        </label>
+    </p>
+    <input type="text" class="text-muted mb-0" @bind-value=projectName />
+    <label>
+        @((user as Customer).Department)
+    </label>
+    <label> Select Developer </label>
+    <select @bind=developer class="form-control" >
+        @foreach (var i in Mongo.FindAllDeveloper())
+        {
+            <option value="@i.Login">@i.Login</option>
+        }
+    </select>
+    <select @bind=developer class="form-control" >
+        @foreach (var i in Mongo.FindAllPlanner())
+        {
+            <option value="@i.Login">@i.Login</option>
+        }
+    </select>
+
+
+    <button type="button" id="btnProf"
+                        class="btn btn-success" @onclick=CreateProject>
+                    Create project
+    </button>
+</section>
+
+@code {
+    User user;
+    string projectName;
+    Developer developer;
+    Planner planner;
+    private bool isLoading;
+
+
+    protected override void OnInitialized()
+    {
+        user = servise.GetUser();
+    }
+
+    private void CreateProject()
+    {
+        Project project = new Project(projectName, (user as Customer).Department, developer, planner);
+        servise.SetProject(project);
+        if (project.Type == "Gasification")
+        {
+            Customer.ProjectGasification.Add(project);
+        }
+        else
+        {
+            Customer.ProjectWaterSupply.Add(project);
+        }
+        manager.NavigateTo("/");
+    }
+}

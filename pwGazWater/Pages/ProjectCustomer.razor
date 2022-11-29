@@ -1,0 +1,116 @@
+﻿@page "/projectCustomer"
+
+@using Microsoft.Extensions.Logging
+@using pwGazWater.Data
+@inject SingletonServise servise
+@inject NavigationManager manager
+
+@if (CheckInfo())
+{
+    <p>
+        <label>
+            Заказчик @customer.FullName
+        </label>
+    </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Project name</th>
+                    <th>Developer</th>
+                    <th>Customer</th>
+                    <th>Open project</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var project in GetProjects())
+                {
+                    <tr>
+                        <td>@project.Name</td>
+                        <td>@project.Developer</td>
+                        <td>@project.Planner</td>
+                        <td>
+                            <button type="button" class="btn btn-info" @onclick=CheckProject>Open project</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-success" @onclick=CreateProject>Create project</button>
+}
+@else 
+{
+        <p>
+        <label>
+            Заполните все данные!
+        </label>
+    </p>
+}
+
+
+@code {
+    Customer customer = servise.GetUser();
+
+    private void CreateProject()
+    {
+        manager.NavigateTo("projectCreate");
+    }
+
+    private void CheckProject()
+    {
+        manager.NavigateTo();
+    }
+
+    private List<Project> GetProjects()
+    {
+        if (customer.Department == "Gasification")
+        {
+            return Customer.ProjectGasification; 
+        }
+        else
+        {
+            return Customer.ProjectWaterSupply;
+        }
+    }
+
+    private bool CheckInfo()
+    {
+        if ((customer.FullName == null || customer.FullName == string.Empty) || (customer.PhoneNumber == null || customer.PhoneNumber == string.Empty)
+        || (customer.Email == null || customer.Email == string.Empty))
+        {
+            return false;
+        }
+        return true;
+    }
+
+
+
+
+    //private async Task LoadFiles(InputFileChangeEventArgs e)
+    //{
+    //    isLoading = true;
+    //    if (e.FileCount > maxAllowedFiles || e.FileCount < maxAllowedFiles)
+    //        return;
+    //    foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+    //    {
+    //        loadedFiles.Add(file);
+    //        var path = Path.Combine(Environment.ContentRootPath,
+    //                "wwwroot", "unsafe",
+    //                file.Name);
+    //        await using FileStream fs = new(path, FileMode.Create);
+    //        await file.OpenReadStream(10000000000000).CopyToAsync(fs);
+    //    }
+    //    isLoading = false;
+    //}
+
+    //private void AddToDB(IBrowserFile file)
+    //{
+    //    FileSystemService fs = new FileSystemService();
+    //    string path = Path.Combine(Environment.ContentRootPath,
+    //                    "wwwroot", "unsafe",
+    //                    file.Name);
+    //    fs.UploadImageToDb(file, path);
+    //    loadedFiles.Remove(file);
+    //}
+}
+
+

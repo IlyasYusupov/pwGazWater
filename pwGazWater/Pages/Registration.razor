@@ -51,7 +51,18 @@
                     <option value="Planner">Planner</option>
                   </select>
                 </div>
-
+                @if (JobTitle == "Customer")
+                {
+                    <div class="form-outline mb-4">
+                    <label class="form-label" for="form3Example4cdg">Your department </label>
+                            <select @bind=Department
+                            class="form-control" >
+                            <option value="Gasification">Gasification</option>
+                            <option value="Water supply">Water supply</option>
+                        </select>
+                    </div>
+                    <br>                
+                }
                 <div class="d-flex justify-content-center">
                   <button type="button"
                     class="btn btn-success btn-block btn-lg gradient-custom-4 text-body" @onclick=RegistrClick>Register</button>
@@ -72,14 +83,15 @@
 </section>
 
 @code {
-    string Login = "";
-    string PhoneNumber = "";
-    string Email = "";
-    string Password = "";
-    string RepeatPassword = "";
+    string Login = string.Empty;
+    string PhoneNumber = string.Empty;
+    string Email = string.Empty;
+    string Password = string.Empty;
+    string RepeatPassword = string.Empty;
     bool Error = false;
-    string ErrorText = "";
-    string JobTitle = "";
+    string ErrorText = string.Empty;
+    string JobTitle = string.Empty;
+    string Department = string.Empty;
 
 
     private void RegistrClick()
@@ -113,7 +125,10 @@
             switch (JobTitle)
             {
                 case "Customer":
-                    user = new Customer(Login, PhoneNumber, Email, Password);
+                    user = new Customer(Login, PhoneNumber, Email, Password)
+                    {
+                        Department = this.Department
+                    };
                     break;
 
                 case "Developer":

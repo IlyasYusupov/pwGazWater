@@ -1,0 +1,140 @@
+﻿@page "/projectWaterSupply"
+
+@using Microsoft.Extensions.Logging
+@inject IWebHostEnvironment Environment
+
+@*<h3>Upload file</h3>
+
+
+<p>
+    <label>
+        Upload u files:
+        <InputFile OnChange="LoadFiles" multiple />
+    </label>
+</p>
+    <table class="table"> 
+        <thead>
+            <tr>
+                <th>Documents name</th>
+                <th>Save</th>
+                <th>Delete</th>
+                <th>Load</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Акт обследования и выбора трассы сети водоснабжения</td>
+                <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB(file)">Save</button> </td>
+                <td> <button type="button" class="btn btn-danger" @onclick="() => Delet(file)">delet</button> </td>
+                <td> <button type="button" class="btn btn-info" @onclick="() => AddToDB(file)">Load</button></td>
+            </tr>
+            <tr>
+                <td>Акт обследования и выбора места под проектируемую скважину</td>
+                <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB(file)">Save</button> </td>
+                <td> <button type="button" class="btn btn-danger" @onclick="() => AddToDB(file)">delet</button> </td>
+                <td> <button type="button" class="btn btn-info" @onclick="() => AddToDB(file)">Load</button></td>
+            </tr>
+            <tr>
+                <td> Согласованный ситуационной план (М1:10000 или М1:25000) с нанесением источников воды
+                    (скважин, родников и т.п.), существующих водонапорных башен, предполагаемой трассой водопровода
+                    и места врезки в существующую сеть</td>
+                <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB(file)">Save</button> </td>
+                <td> <button type="button" class="btn btn-danger" @onclick="() => AddToDB(file)">delet</button> </td>
+                <td>
+                    <button type="button" class="btn btn-info" @onclick="() => AddToDB(file)">Load</button>
+                </td>
+            </tr>
+            <tr>
+                <td>План населённого пункта в М1:1000 или М1:500 (топографическая съемка)</td>
+                <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB(file)">Save</button> </td>
+                <td> <button type="button" class="btn btn-danger" @onclick="() => AddToDB(file)">delet</button> </td>
+                <td>
+                    <button type="button" class="btn btn-info" @onclick="() => AddToDB(file)">Load</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Техинические условия на водоснабжение</td>
+                <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB(file)">Save</button> </td>
+                <td> <button type="button" class="btn btn-danger" @onclick="() => AddToDB(file)">delet</button> </td>
+                <td>
+                    <button type="button" class="btn btn-info" @onclick="() => AddToDB(file)">Load</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Техинические условия на электроснабжение (для насосной станции первого или второго подъема</td>
+                <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB(file)">Save</button> </td>
+                    <td> <button type="button" class="btn btn-danger" @onclick="() => AddToDB(file)">delet</button> </td>
+                    <td>
+                    <button type="button" class="btn btn-info" @onclick="() => AddToDB(file)">Load</button>
+                    </td>
+            </tr>
+            <tr>
+                <td>Градостроительный план земельного участка</td>
+                <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB(file)">Save</button> </td>
+                <td> <button type="button" class="btn btn-danger" @onclick="() => AddToDB(file)">delet</button> </td>
+                <td>
+                    <button type="button" class="btn btn-info" @onclick="() => AddToDB(file)">Load</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Справка согласования с собственниками земельных участков</td>
+                <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB(file)">Save</button> </td>
+                <td> <button type="button" class="btn btn-danger" @onclick="() => AddToDB(file)">delet</button> </td>
+                <td>
+                    <button type="button" class="btn btn-info" @onclick="() => AddToDB(file)">Load</button>
+                </td>
+            </tr>
+            <td>Докумен, подтверждающий проведение межевания с присвоением кадастрового номера земельного участка
+                под строительство водопровода и сооружений на нем
+            </td>
+                <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB(file)">Save</button> </td>
+                <td> <button type="button" class="btn btn-danger" @onclick="() => AddToDB(file)">delet</button> </td>
+                <td>
+            <button type="button" class="btn btn-info" @onclick="() => AddToDB(file)">Load</button>
+                </td>
+            </tr>
+            <td>Заключение Органа Ростпотребнадзора санитарно-эпидемиологической службы по отводу</td>
+                <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB(file)">Save</button> </td>
+                <td> <button type="button" class="btn btn-danger" @onclick="() => AddToDB(file)">delet</button> </td>
+                <td>
+                    <button type="button" class="btn btn-info" @onclick="() => AddToDB(file)">Load</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+*@
+@code {
+    //private List<IBrowserFile> loadedFiles = new List<IBrowserFile>();
+    //private bool isLoading;
+    //int maxAllowedFiles = 1;
+
+    //private async Task LoadFiles(InputFileChangeEventArgs e)
+    //{
+    //    isLoading = true;
+    //    if (e.FileCount > maxAllowedFiles || e.FileCount < maxAllowedFiles)
+    //        return;
+    //    foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+    //    {
+    //        loadedFiles.Add(file);
+    //        var path = Path.Combine(Environment.ContentRootPath,
+    //                "wwwroot", "unsafe",
+    //                file.Name);
+    //        await using FileStream fs = new(path, FileMode.Create);
+    //        await file.OpenReadStream(10000000000000).CopyToAsync(fs);
+    //    }
+    //    isLoading = false;
+    //}
+
+    //private void AddToDB(IBrowserFile file)
+    //{
+    //    FileSystemService fs = new FileSystemService();
+    //    string path = Path.Combine(Environment.ContentRootPath,
+    //                    "wwwroot", "unsafe",
+    //                    file.Name);
+    //    fs.UploadImageToDb(file, path);
+    //    loadedFiles.Remove(file);
+    //}
+}
+
+

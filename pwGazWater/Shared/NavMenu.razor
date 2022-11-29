@@ -1,4 +1,7 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using pwGazWater.Data
+@inject SingletonServise servise
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">pwGazWater</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -14,6 +17,17 @@
             </NavLink>
         </div>
 </div>
+
+@if (servise.GetUser().GetType().Name == "Customer")
+{
+    <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+            <div class="nav-item px-3">
+            <NavLink class="nav-link" href="projectCustomer">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Projects
+                </NavLink>
+            </div>
+    </div>
+}
 
 @code {
     private bool collapseNavMenu = true;

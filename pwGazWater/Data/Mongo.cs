@@ -29,6 +29,36 @@ namespace pwGazWater.Data
             var one = collection.Find(x => x.Login == login).FirstOrDefault();
             return one;
         }
+        public static List<User> FindAllPlanner()
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<User>("User");
+            var list = collection.Find(x => true).ToList();
+            var users = new List<User>();
+            foreach (var user in list)
+            {
+                if (user.GetType().Name == "Planner")
+                    users.Add(user);
+            }
+            return users;
+        }
+
+
+        public static List<User> FindAllDeveloper()
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<User>("User");
+            var list = collection.Find(x => true).ToList();
+            var users = new List<User>();
+            foreach (var user in list)
+            {
+                if(user.GetType().Name == "Developer")
+                    users.Add(user);
+            }
+            return users;
+        }
 
         public static List<User> FindAll()
         {
