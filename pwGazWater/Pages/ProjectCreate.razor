@@ -87,7 +87,13 @@
         {
             (user as Customer).ProjectWaterSupply.Add(project);
         }
-        ((Mongo.Find(developer)) as Developer).Projects.Add(project);
+        var newDeveloper = (Mongo.Find(developer)) as Developer;
+        newDeveloper.Projects.Add(project);
+        var newPlanner = (Mongo.Find(planner)) as Planner;
+        newPlanner.Projects.Add(project);
+        Mongo.Replace(user.Login, (user as Customer));
+        Mongo.Replace(((Mongo.Find(developer)) as Developer).Login, newDeveloper);
+        Mongo.Replace(((Mongo.Find(planner)) as Planner).Login, newPlanner);
         Mongo.AddProjectToDB(project);
         manager.NavigateTo("projectCustomer");
     }

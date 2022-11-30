@@ -51,7 +51,7 @@ namespace pwGazWater.Data
         }
 
 
-        public static void UpgradeOne(string login, string seting, string item)
+        public static void UpgradeOne(string login, string seting, List<Project> item)
         {
             var client = new MongoClient();
             var database = client.GetDatabase("UserBaseGuz");

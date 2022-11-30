@@ -68,11 +68,11 @@ else
     {
         if (customer.Department == "Gasification")
         {
-            return Mongo.FindAllGasificationProject(); 
+            return customer.ProjectGasification;
         }
         else
         {
-            return Mongo.FindAllWaterSupplyProject();
+            return customer.ProjectWaterSupply;
         }
     }
 

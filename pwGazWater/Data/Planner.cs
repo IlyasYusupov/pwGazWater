@@ -31,5 +31,7 @@ namespace pwGazWater.Data
         [BsonIgnoreIfNull]
         public List<Project> Projects = new List<Project>();
 
+        [BsonIgnoreIfNull]
+        public List<Document> Documents = new List<Document>();
     }
 }

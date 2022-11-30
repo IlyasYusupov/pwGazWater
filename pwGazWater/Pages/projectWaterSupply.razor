@@ -7,7 +7,8 @@
 @inject SingletonServise servise
 @inject NavigationManager manager
 
-
+@if (user.GetType().Name == "Developer")
+{
     <table class="table"> 
         <thead>
             <tr>
@@ -21,8 +22,8 @@
         <tbody>
             <tr>
                 <td>Акт обследования и выбора трассы сети водоснабжения</td>
-                <td> <InputFile OnChange="LoadFiles" multiple /> </td>
-                <td> <button type="button" class="btn btn-success" @onclick="() => AddToDB()">Add</button> </td>
+                <td> <InputFile OnChange="LoadFiles" multiple/> </td>
+                <td> <button type="button" class="btn btn-success" @onclick=AddToDB>Add</button> </td>
                 <td> <button type="button" class="btn btn-danger" @onclick="() => Delete()">delet</button> </td>
                 <td> <button type="button" class="btn btn-info">Load</button></td>
             </tr>
@@ -100,13 +101,20 @@
         </tr>*@
         </tbody>
     </table>
+    <h1>@tr</h1>
+}
+else
+{
+    
+}
 
 
 @code {
-    private List<IBrowserFile> loadedFiles = new List<IBrowserFile>();
+    private IBrowserFile loadedFile;
     private bool isLoading;
     int maxAllowedFiles = 1;
     User user;
+    string tr;
 
     protected override void OnInitialized()
     {
@@ -119,40 +127,58 @@
                 user = servise.GetUser() as Planner;
                 break;
         }
+        
     }
 
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
-        isLoading = true;
-        if (e.FileCount > maxAllowedFiles || e.FileCount < maxAllowedFiles)
-            return;
-        foreach (var file in e.GetMultipleFiles(maxAllowedFiles))
+        try
         {
-            loadedFiles.Add(file);
+            loadedFile = e.File;
             var path = Path.Combine(Environment.ContentRootPath,
-                    "wwwroot", "unsafe",
-                    file.Name);
+                    "wwwroot", "files",
+                loadedFile.Name);
             await using FileStream fs = new(path, FileMode.Create);
-            await file.OpenReadStream(10000000000000).CopyToAsync(fs);
+            await loadedFile.OpenReadStream(10000000000000).CopyToAsync(fs);
         }
-        isLoading = false;
+        catch( Exception ms)
+        {
+            tr = ms.Message;
+        }
+
     }
 
     private void Delete()
     {
-        
+
     }
 
 
-    private void AddToDB(/*IBrowserFile file*/)
+    private void AddToDB()
     {
-        //FileSystemService fs = new FileSystemService();
-        //string path = Path.Combine(Environment.ContentRootPath,
-        //                "wwwroot", "unsafe",
-        //                file.Name);
-        //fs.UploadImageToDb(file, path);
-        //loadedFiles.Remove(file);
+        if (loadedFile != null)
+        {
+            FileSystemService fs = new FileSystemService();
+            string path = Path.Combine(Environment.ContentRootPath,
+                            "wwwroot", "files",
+                            loadedFile.Name);
+            fs.UploadToDb(loadedFile, path);
+            switch (servise.GetUser().GetType().Name)
+            {
+                case "Developer":
+                    (user as Developer).Documents.Add(new Document(loadedFile.Name, path, false));
+                    Mongo.Replace(user.Login, user);
+                    break;
+                case "Planner":
+                    //(user as Planner).Documents.Add(new Document(loadedFile.Name, path, false));
+                    break;
+            }
+        }
+        else
+        {
+            return;
+        }
     }
 }
 

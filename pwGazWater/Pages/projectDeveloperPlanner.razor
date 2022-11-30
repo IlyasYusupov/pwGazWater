@@ -22,7 +22,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var project in GetProjects())
+                @foreach (var project in (user as Developer).Projects)
                 {
                     <tr>
                         <td>@project.Name</td>
@@ -52,7 +52,7 @@ else if (user.GetType().Name == "Planner")
                 </tr>
             </thead>
             <tbody>
-                @foreach (var project in GetProjects())
+                @foreach (var project in (user as Planner).Projects)
                 {
                     <tr>
                         <td>@project.Name</td>
@@ -92,18 +92,6 @@ else
     private void CheckProject()
     {
         manager.NavigateTo("projectWaterSupply");
-    }
-
-    private List<Project> GetProjects()
-    {
-        switch (user.GetType().Name)
-        {
-            case "Developer":
-                return Mongo.FindAllDeveloperProject(user.Login);
-            case "Planner":
-                return Mongo.FindAllPlannerProject(user.Login);
-        }
-        return null;
     }
 
     private bool CheckInfo()
