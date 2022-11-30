@@ -27,7 +27,7 @@
                     <tr>
                         <td>@project.Name</td>
                         <td>
-                            <button type="button" class="btn btn-info" @onclick=CheckProject>Open project</button>
+                            <button type="button" class="btn btn-info" @onclick="() => CheckProject(project)">Open project</button>
                         </td>
                     </tr>
                 }
@@ -57,7 +57,7 @@ else if (user.GetType().Name == "Planner")
                     <tr>
                         <td>@project.Name</td>
                         <td>
-                            <button type="button" class="btn btn-info" @onclick=CheckProject>Open project</button>
+                            <button type="button" class="btn btn-info" @onclick="() => CheckProject(project)">Open project</button>
                         </td>
                     </tr>
                 }
@@ -89,9 +89,13 @@ else
         }
     }
 
-    private void CheckProject()
+    private void CheckProject(Project project)
     {
-        manager.NavigateTo("projectWaterSupply");
+        servise.SetProject(Mongo.FindProject(project.Name));
+        if (project.Type == "Water supply")
+            manager.NavigateTo("projectWaterSupply");
+        else
+            manager.NavigateTo("projectGasification");
     }
 
     private bool CheckInfo()

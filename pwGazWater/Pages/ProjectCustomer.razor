@@ -61,7 +61,14 @@ else
 
     private void CheckProject()
     {
-        //manager.NavigateTo("");
+        if (customer.Department == "Gasification")
+        {
+            manager.NavigateTo("projectGasification");
+        }
+        else
+        {
+            manager.NavigateTo("projectWaterSupply");
+        }
     }
 
     private List<Project> GetProjects()

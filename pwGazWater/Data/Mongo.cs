@@ -68,6 +68,23 @@ namespace pwGazWater.Data
             collection.InsertOne(project);
         }
 
+        public static Project FindProject(string name)
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<Project>("project");
+            var one = collection.Find(x => x.Name == name).FirstOrDefault();
+            return one;
+        }
+
+        public static void ReplaceProject(string name, Project project)
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<Project>("project");
+            collection.ReplaceOne(z => z.Name == name, project);
+        }
+
         public static List<Project> FindAllDeveloperProject(string login)
         {
             var client = new MongoClient();

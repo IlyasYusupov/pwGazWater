@@ -1,4 +1,4 @@
-﻿@page "/projectWaterSupply"
+﻿@page "/projectGasification"
 
 @using Microsoft.Extensions.Logging
 @using pwGazWater.Data
@@ -6,70 +6,6 @@
 @inject IWebHostEnvironment Environment
 @inject SingletonServise servise
 @inject NavigationManager manager
-
-
-@if(user.GetType().Name == "Customer")
-{
-    <h2>Документы застройщика</h2>
-    <br>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Documents name</th>
-                <th>file</th>
-                <th> </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var i in DeveloperDict)
-            {
-                <tr>
-                    <td>@DeveloperDict[i.Key]</td>
-                    <td> <button type="button" class="btn btn-info" @*@onclick="() => Load()"*@>Load</button> </td>
-                    @if (docs.Find(x => x.Name == DeveloperDict[i.Key]) != null && docs.Find(x => x.Name == DeveloperDict[i.Key]).Name == DeveloperDict[i.Key])
-                    {
-                        <td><input type="checkbox" @bind-value=checkBox></input></td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table> <br>
-
-    <h2>Документы планировщика</h2>
-    <br>
-
-    <table class="table"> 
-        <thead>
-            <tr>
-                <th>Documents name</th>
-                <th>Info</th>
-                <th>Add to DB</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var i in PlannerDict)
-            {
-                <tr>
-                    <td>
-                        <label>
-                            @PlannerDict[i.Key]
-                        </label>
-                    </td>
-                    <td> <input type="text" class="text-muted mb-0" @bind-value=text /></td>
-                        <td> <button type="button" class="btn btn-danger" @*@onclick="() => Edit(PlannerDict[i.Key])*@">Edit</button> </td>
-                    <td>
-                        <button type="button" class="btn btn-success" @onclick="() => AddToDB(PlannerDict[i.Key])">
-                        Add
-                    </button>
-                    </td>
-                    <td> <button type="button" class="btn btn-danger" @onclick="() => Delete()">delet</button> </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <br>
-}
 
 @if (user.GetType().Name == "Developer")
 {
@@ -121,7 +57,7 @@
                         </label>
                     </td>
                     <td> <input type="text" class="text-muted mb-0" @bind-value=text /></td>
-                        <td> <button type="button" class="btn btn-danger" @*@onclick="() => Edit(PlannerDict[i.Key])*@">Edit</button> </td>
+                        <td> <button type="button" class="btn btn-danger" @*@onclick="() => Edit(PlannerDict[i.Key]*@)">Edit</button> </td>
                     <td>
                         <button type="button" class="btn btn-success" @onclick="() => AddToDB(PlannerDict[i.Key])">
                         Add
@@ -130,7 +66,6 @@
                     <td> <button type="button" class="btn btn-danger" @onclick="() => Delete()">delet</button> </td>
                 </tr>
             }
-
                 @*<tr>
                     <td>
                         <label>
@@ -192,18 +127,11 @@ else
     List<DeveloperDocument> docs;
     List<PlannerDocument> docss;
     string text = string.Empty;
-    bool checkBox;
 
     protected override void OnInitialized()
     {
-        
         switch (servise.GetUser().GetType().Name)
         {
-            case "Customer":
-                user = servise.GetUser() as Customer;
-                docs = servise.GetProject().Documents;
-                docss = servise.GetProject().Documentss;
-                break;
             case "Developer":
                 user = servise.GetUser() as Developer;
                 docs = servise.GetProject().Documents;
@@ -213,6 +141,7 @@ else
                 docss = servise.GetProject().Documentss;
                 break;
         }
+
     }
 
 
@@ -284,26 +213,22 @@ else
     }
 
     Dictionary<int, string> DeveloperDict = new Dictionary<int, string>()
-    { {0, "Акт обследования и выбора трассы сети водоснабжения" },
-      {1, "Акт обследования и выбора места под проектируемую скважину" },
-      {2, "Согласованный ситуационной план (М1:10000 или М1:25000) с нанесением источников воды (скважин, родников и т.п.), существующих водонапорных башен, предполагаемой трассой водопровода и места врезки в существующую сеть" },
-      {3, "План населённого пункта в М1:1000 или М1:500 (топографическая съемка)" },
-      {4, "Техинические условия на водоснабжение" },
-      {5, "Техинические условия на электроснабжение (для насосной станции первого или второго подъема" },
-      {6, "Градостроительный план земельного участка" },
-      {7, "Справка согласования с собственниками земельных участков" },
-      {8, "Докумен, подтверждающий проведение межевания с присвоением кадастрового номера земельного участка под строительство водопровода и сооружений на нем" },
-      {9, "Заключение Органа Ростпотребнадзора санитарно-эпидемиологической службы по отводу" },
-      {10, "Сведения о наличии водозаборных скважин (рдников) на территории хозяйства" },
+    { {0, "Письмо-обращение на имя Президента, Премьер-Министра, Минстрой РТ" },
+      {1, "Задание на проектирование" },
+      {2, "Ситуационный план (утвержденныйисполкомом)" },
+      {3, "Технические условия на присоединение кгазораспределительной сети (№, дата,срок действий Технических условий)" },
+      {4, "Технический паспорт (план БТИ) объекта СКБ" },
+      {5, "Технический паспорт (план БТИ) существующей котельной" },
+      {6, "АКТ обследования объекта" },
+      {7, "Технические условия на сети электроснабжение, водоснабжения, водоотведения при установке БМК" },
+      {8, "Согласование посадки котельной" },
     };
 
     Dictionary<int, string> PlannerDict = new Dictionary<int, string>()
     {
       {0, "Диаметр (мм) трубопровода и протяженность линейного объекта (м)" },
-      {1, "Производительность БОС, м3/сут" },
-      {2, "кол.-во (шт) и производительность КНС (м3/ч)" },
-      {3, "Сметная стоимость работ, тыс. руб." },
-      {4, "Срок разработки проектной документации, месяцев" },
+      {1, "Срок разработки проектной документации,месяцев" },
+      {2, "Срок разработки проектной документации,месяцев" },
     };
 }
 

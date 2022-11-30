@@ -5,12 +5,11 @@ using System.Threading;
 
 namespace pwGazWater.Data
 {
-    public class Document
+    public class PlannerDocument
     {
-        public Document(string name, string path, bool itsOK)
+        public PlannerDocument(string name, bool itsOK)
         {
             Name = name;
-            Path = path;
             ItsOK = itsOK;
         }
 
@@ -20,7 +19,7 @@ namespace pwGazWater.Data
         
         public string Name { get; set; }
 
-        public string Path { get; set; }
+        public string Text { get; set; }
 
         public bool ItsOK { get; set; }
 
