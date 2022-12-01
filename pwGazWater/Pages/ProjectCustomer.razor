@@ -29,7 +29,7 @@
                         <td>@project.Developer.Login</td>
                         <td>@project.Planner.Login</td>
                         <td>
-                            <button type="button" class="btn btn-info" @onclick=CheckProject>Open project</button>
+                        <button type="button" class="btn btn-info" @onclick="() => CheckProject(project)">Open project</button>
                         </td>
                     </tr>
                 }
@@ -59,8 +59,9 @@ else
         manager.NavigateTo("projectCreate");
     }
 
-    private void CheckProject()
+    private void CheckProject(Project project)
     {
+        servise.SetProject(Mongo.FindProject(project.Name));
         if (customer.Department == "Gasification")
         {
             manager.NavigateTo("projectGasification");

@@ -60,6 +60,15 @@ namespace pwGazWater.Data
             collection.UpdateOne(x => x.Login == login, update);
         }
 
+
+        public static void AddToDBPlanner(PlannerDocument doc)
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<PlannerDocument>("PlannerDocument");
+            collection.InsertOne(doc);
+        }
+
         public static void AddProjectToDB(Project project)
         {
             var client = new MongoClient();
