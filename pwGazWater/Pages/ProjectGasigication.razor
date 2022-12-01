@@ -24,10 +24,14 @@
             {
                 <tr>
                     <td>@DeveloperDict[i.Key]</td>
-                    <td> <button type="button" class="btn btn-info" @*@onclick="() => Load()" *@>Load</button> </td>
                     @if (docs.Find(x => x.Name == DeveloperDict[i.Key]) != null && docs.Find(x => x.Name == DeveloperDict[i.Key]).Name == DeveloperDict[i.Key])
                     {
+                        <td> <button type="button" class="btn btn-info" @onclick="() => Load(DeveloperDict[i.Key])">Load</button> </td>
                         <td><input type="checkbox" @bind-value=checkBox></input></td>
+                    }
+                    else
+                    {
+                        <td> <label> Не загружено </label> </td>
                     }
                 </tr>
             }
@@ -270,20 +274,12 @@ else
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
-        try
-        {
             loadedFile = e.File;
             var path = Path.Combine(Environment.ContentRootPath,
                     "wwwroot", "files",
                 loadedFile.Name);
             await using FileStream fs = new(path, FileMode.Create);
             await loadedFile.OpenReadStream(10000000000000).CopyToAsync(fs);
-        }
-        catch( Exception ms)
-        {
-            tr = ms.Message;
-        }
-
     }
 
     private void Edit(int i)
@@ -373,6 +369,12 @@ else
         {
             return;
         }
+    }
+
+    private void Load(string name)
+    {
+        FileSystemService fs = new FileSystemService();
+        fs.DownloadToLocal(docs.Find(x => x.Name == name).FileName);
     }
 
     Dictionary<int, string> DeveloperDict = new Dictionary<int, string>()

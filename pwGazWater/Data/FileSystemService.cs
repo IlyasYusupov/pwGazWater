@@ -18,15 +18,15 @@ namespace pwGazWater.Data
             }
         }
 
-        //public void DownloadToLocal(string name, string path)
-        //{
-        //    var client = new MongoClient("mongodb://localhost");
-        //    var database = client.GetDatabase("UserImagesIlyas");
-        //    var gridFS = new GridFSBucket(database);
-        //    using (FileStream fs = new FileStream(path, FileMode.CreateNew))
-        //    {
-        //        gridFS.DownloadToStreamByName(user, fs);
-        //    }
-        //}
+        public void DownloadToLocal(string name)
+        {
+            var client = new MongoClient("mongodb://localhost");
+            var database = client.GetDatabase("UserBaseGuz");
+            var gridFS = new GridFSBucket(database);
+            using (FileStream fs = new FileStream($"{Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/DownLoadsFiles/")}{name}", FileMode.CreateNew))
+            {
+                gridFS.DownloadToStreamByName($"{name}", fs);
+            }
+        }
     }
 }
