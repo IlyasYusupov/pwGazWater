@@ -2,6 +2,7 @@
 
 <PageTitle>Profile</PageTitle>
 
+@using Microsoft.AspNetCore.SignalR.Client;
 @using pwGazWater.Data
 
 @inject NavigationManager manager
@@ -193,14 +194,22 @@
             class="btn btn-saccess" @onclick=Projects>
         Projects
     </button>
+    <button type="button" id="btnProf"
+            class="btn btn-info" @onclick=Loaded>
+        Messages
+    </button>
 </section>
 
 @code {
     private User user;
-
     protected override void OnInitialized()
     {
         user = servise.GetUser();
+    }
+
+    private void Loaded()
+    {
+        
     }
 
     private void Projects()
@@ -217,7 +226,6 @@
                 manager.NavigateTo("projectDeveloperPlanner");
                 break;
         }
-        
     }
 
     private void LogOut()

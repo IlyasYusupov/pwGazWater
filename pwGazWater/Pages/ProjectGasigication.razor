@@ -27,7 +27,7 @@
                     @if (docs.Find(x => x.Name == DeveloperDict[i.Key]) != null && docs.Find(x => x.Name == DeveloperDict[i.Key]).Name == DeveloperDict[i.Key])
                     {
                         <td> <button type="button" class="btn btn-info" @onclick="() => Load(DeveloperDict[i.Key])">Load</button> </td>
-                        <td><input type="checkbox" @bind-value=checkBox></input></td>
+                        <td><input type="checkbox" @onchange="() => CheckDocs()"></input></td>
                     }
                     else
                     {
@@ -274,12 +274,12 @@ else
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
-            loadedFile = e.File;
-            var path = Path.Combine(Environment.ContentRootPath,
-                    "wwwroot", "files",
-                loadedFile.Name);
-            await using FileStream fs = new(path, FileMode.Create);
-            await loadedFile.OpenReadStream(10000000000000).CopyToAsync(fs);
+        loadedFile = e.File;
+        var path = Path.Combine(Environment.ContentRootPath,
+                "wwwroot", "files",
+            loadedFile.Name);
+        await using FileStream fs = new(path, FileMode.Create);
+        await loadedFile.OpenReadStream(10000000000000).CopyToAsync(fs);
     }
 
     private void Edit(int i)
@@ -299,6 +299,11 @@ else
                 break;
 
         }
+    }
+
+    private void CheckDocs()
+    {
+        
     }
 
     private void AddToDB(int i)

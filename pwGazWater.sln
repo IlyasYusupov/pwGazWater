@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pwGazWater", "pwGazWater\pwGazWater.csproj", "{0D93A706-ADE4-4A52-8279-A29F17226DEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "pwGazWater", "pwGazWater\pwGazWater.csproj", "{0D93A706-ADE4-4A52-8279-A29F17226DEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfChat", "WpfChat\WpfChat.csproj", "{D7990825-7484-4E1E-96D8-1A2F576ED76F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{0D93A706-ADE4-4A52-8279-A29F17226DEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D93A706-ADE4-4A52-8279-A29F17226DEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D93A706-ADE4-4A52-8279-A29F17226DEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7990825-7484-4E1E-96D8-1A2F576ED76F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7990825-7484-4E1E-96D8-1A2F576ED76F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7990825-7484-4E1E-96D8-1A2F576ED76F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7990825-7484-4E1E-96D8-1A2F576ED76F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

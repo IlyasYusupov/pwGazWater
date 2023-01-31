@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<SingletonServise>();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -20,12 +21,11 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
-
+app.UseDefaultFiles();
 app.UseRouting();
-
 app.MapBlazorHub();
+app.MapHub<ChatHub>("/chat");
 app.MapFallbackToPage("/_Host");
 
 app.Run();
