@@ -6,6 +6,9 @@
 @inject IWebHostEnvironment Environment
 @inject SingletonServise servise
 @inject NavigationManager manager
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
 
 @if (user.GetType().Name == "Customer")
 {
@@ -121,6 +124,29 @@
             }
         </tbody>
     </table>
+
+<div class="form-group">
+    <label>
+        User:
+        <input @bind="userInput" />
+    </label>
+</div>
+<div class="form-group">
+    <label>
+        Message:
+        <input @bind="messageInput" size="50" />
+    </label>
+</div>
+<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+<hr>
+
+<ul id="messagesList">
+    @foreach (var message in messages)
+    {
+        <li>@message</li>
+    }
+</ul>
 }
 @if (user.GetType().Name == "Planner")
     {
@@ -198,9 +224,30 @@
                     </button>
                 </td>
             </tr>
-
             </tbody>
         </table>
+        <div class="form-group">
+    <label>
+        User:
+        <input @bind="userInput" />
+    </label>
+</div>
+<div class="form-group">
+    <label>
+        Message:
+        <input @bind="messageInput" size="50" />
+    </label>
+</div>
+<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+<hr>
+
+<ul id="messagesList">
+    @foreach (var message in messages)
+    {
+        <li>@message</li>
+    }
+</ul>
 }
 else
 {
@@ -222,10 +269,14 @@ else
     bool inputBlok1 = true;
     bool inputBlok2 = true;
     bool inputBlok3 = true;
+    private HubConnection? hubConnection;
+    private List<string> messages = new List<string>();
+    private string? userInput;
+    private string? messageInput;
 
-
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
+
         switch (servise.GetUser().GetType().Name)
         {
             case "Customer":
@@ -265,12 +316,40 @@ else
                 {
                     text3 = docss.Find(x => x.Name == PlannerDict[2]).Text;
                 }
-
                 break;
         }
+            hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/chat"))
+            .Build();
 
+            hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+            {
+                var encodedMsg = $"{user}: {message}";
+                messages.Add(encodedMsg);
+                InvokeAsync(StateHasChanged);
+            });
+
+            await hubConnection.StartAsync();
     }
 
+    private async Task Send()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("Send", userInput, messageInput);
+        }
+    }
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
 
     private async Task LoadFiles(InputFileChangeEventArgs e)
     {
@@ -301,10 +380,11 @@ else
         }
     }
 
-    private void CheckDocs()
+    void CheckDocs()
     {
         
     }
+
 
     private void AddToDB(int i)
     {

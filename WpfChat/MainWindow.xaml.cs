@@ -34,7 +34,7 @@ namespace WpfChat
 
 
             // регистрируем функцию Receive для получения данных
-            connection.On<string, string>("Receive", (user, message) =>
+            connection.On<string, string>("ReceiveMessage", (user, message) =>
             {
                 Dispatcher.Invoke(() =>
                 {

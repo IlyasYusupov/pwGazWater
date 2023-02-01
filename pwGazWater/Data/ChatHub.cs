@@ -6,9 +6,9 @@ namespace pwGazWater.Data
 {
     public class ChatHub : Hub
     {
-        public async Task Send(string username, string message)
+        public async Task Send(string user, string message)
         {
-            await this.Clients.All.SendAsync("Receive", username, message);
+            await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
     }
 }
