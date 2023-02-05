@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using pwGazWater.Data;
 
 namespace WpfChat
 {
@@ -23,10 +23,11 @@ namespace WpfChat
     public partial class MainWindow : Window
     {
         HubConnection connection;  // подключение для взаимодействия с хабом
+
         public MainWindow()
         {
             InitializeComponent();
-
+            employeeList.ItemsSource = Mongo.FindAllEmployee(CurrentUser.currentUser.Login);
             // создаем подключение к хабу
             connection = new HubConnectionBuilder()
                 .WithUrl("https://localhost:7003/chat")
@@ -44,21 +45,6 @@ namespace WpfChat
             });
         }
 
-        // обработчик загрузки окна
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // подключемся к хабу
-                await connection.StartAsync();
-                chatbox.Items.Add("Вы вошли в чат");
-                sendBtn.IsEnabled = true;
-            }
-            catch (Exception ex)
-            {
-                chatbox.Items.Add(ex.Message);
-            }
-        }
         // обработчик нажатия на кнопку
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -66,6 +52,22 @@ namespace WpfChat
             {
                 // отправка сообщения
                 await connection.InvokeAsync("Send", userTextBox.Text, messageTextBox.Text);
+            }
+            catch (Exception ex)
+            {
+                chatbox.Items.Add(ex.Message);
+            }
+        }
+
+        private async void employeeList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var user = (User)employeeList.SelectedItem;
+            try
+            {
+                // подключемся к хабу
+                await connection.StartAsync();
+                chatbox.Items.Add("Вы вошли в чат");
+                sendBtn.IsEnabled = true;
             }
             catch (Exception ex)
             {

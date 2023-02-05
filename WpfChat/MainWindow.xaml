@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfChat"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="MainWindow" Height="450" Width="800">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <StackPanel Margin="4">
             <Label Content="Введите логин"/>
             <TextBox x:Name="userTextBox" />
@@ -14,6 +18,17 @@
             <TextBox x:Name="messageTextBox" />
             <Button x:Name="sendBtn" Content="Отправить" Click="Button_Click" IsEnabled="False" />
             <ListBox x:Name="chatbox" />
+        </StackPanel>
+        <StackPanel Grid.Column="1">
+            <ListView Name="employeeList" MouseDoubleClick="employeeList_MouseDoubleClick">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <TextBlock Text="{Binding Login}" />
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackPanel>
     </Grid>
 </Window>

@@ -274,7 +274,7 @@ else
     private string? userInput;
     private string? messageInput;
 
-    protected async override Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
 
         switch (servise.GetUser().GetType().Name)

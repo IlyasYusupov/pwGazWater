@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver.GridFS;
 using pwGazWater.Data;
+using DnsClient;
 
 namespace pwGazWater.Data
 {
@@ -93,65 +94,40 @@ namespace pwGazWater.Data
             var collection = database.GetCollection<Project>("project");
             collection.ReplaceOne(z => z.Name == name, project);
         }
+/*        var client = new MongoClient();
+        var database = client.GetDatabase("UserBaseGuz");
+        var collection = database.GetCollection<User>("User");
+        var one = collection.Find(x => x.Login == login).FirstOrDefault();
+            return one;*/
 
-        public static List<Project> FindAllDeveloperProject(string login)
+        public static User FindCustomer(string login)
         {
             var client = new MongoClient();
             var database = client.GetDatabase("UserBaseGuz");
-            var collection = database.GetCollection<Project>("project");
-            var list = collection.Find(x => x.Developer.Login == login).ToList();
-            var projects = new List<Project>();
-            foreach (var project in list)
-            {
-                projects.Add(project);
-            }
-            return projects;
-        }
-
-        public static List<Project> FindAllPlannerProject(string login)
-        {
-            var client = new MongoClient();
-            var database = client.GetDatabase("UserBaseGuz");
-            var collection = database.GetCollection<Project>("project");
-            var list = collection.Find(x => x.Planner.Login == login).ToList();
-            var projects = new List<Project>();
-            foreach (var project in list)
-            {
-                projects.Add(project);
-            }
-            return projects;
-        }
-
-        public static List<Project> FindAllGasificationProject()
-        {
-            var client = new MongoClient();
-            var database = client.GetDatabase("UserBaseGuz");
-            var collection = database.GetCollection<Project>("project");
+            var collection = database.GetCollection<User>("User");
             var list = collection.Find(x => true).ToList();
-            var projects = new List<Project>();
-            foreach (var project in list)
+            var users = new List<User>();
+            foreach (var user in list)
             {
-                if(project.Type == "Gasification")
-                    projects.Add(project);
+                if (user.GetType().Name == "Customer" && user.Login == login)
+                    return user;
             }
-            return projects;
+            return null;
         }
-
-        public static List<Project> FindAllWaterSupplyProject()
+        public static List<User> FindAllEmployee(string login)
         {
             var client = new MongoClient();
             var database = client.GetDatabase("UserBaseGuz");
-            var collection = database.GetCollection<Project>("project");
+            var collection = database.GetCollection<User>("User");
             var list = collection.Find(x => true).ToList();
-            var projects = new List<Project>();
-            foreach (var project in list)
+            var users = new List<User>();
+            foreach (var user in list)
             {
-                if (project.Type == "Water supply")
-                    projects.Add(project);
+                if (user.Login != login)
+                    users.Add(user);
             }
-            return projects;
+            return users;
         }
-
 
         public static List<User> FindAllPlanner()
         {
@@ -182,7 +158,5 @@ namespace pwGazWater.Data
             }
             return users;
         }
-
-
     }
 }
