@@ -12,8 +12,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <StackPanel Margin="4">
-            <Label Content="Введите логин"/>
-            <TextBox x:Name="userTextBox" />
+
             <Label Content="Введите сообщение"/>
             <TextBox x:Name="messageTextBox" />
             <Button x:Name="sendBtn" Content="Отправить" Click="Button_Click" IsEnabled="False" />

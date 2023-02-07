@@ -125,12 +125,7 @@
         </tbody>
     </table>
 
-<div class="form-group">
-    <label>
-        User:
-        <input @bind="userInput" />
-    </label>
-</div>
+
 <div class="form-group">
     <label>
         Message:
@@ -227,10 +222,6 @@
             </tbody>
         </table>
         <div class="form-group">
-    <label>
-        User:
-        <input @bind="userInput" />
-    </label>
 </div>
 <div class="form-group">
     <label>
@@ -336,9 +327,11 @@ else
     {
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("Send", userInput, messageInput);
+            await hubConnection.SendAsync("Send", messageInput, "1");
         }
     }
+
+
 
     public bool IsConnected =>
         hubConnection?.State == HubConnectionState.Connected;
