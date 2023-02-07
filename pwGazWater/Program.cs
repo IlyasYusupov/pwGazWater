@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using pwGazWater.Data;
 using Microsoft.AspNetCore.ResponseCompression;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,37 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.MapPost("/login", (User loginModel) =>
+{
+    // находим пользователя  p => p.Email == loginModel.Email && p.Password == loginModel.Password
+    User person = Mongo.Find(loginModel.Login);
+    // если пользователь не найден, отправляем статусный код 401
+    if (person is null) return Results.Unauthorized();
+
+    var claims = new List<Claim> { new Claim(ClaimTypes.NameIdentifier, person.Login) };
+    // создаем JWT-токен
+    //var jwt = new JwtSecurityToken(
+    //        issuer: AuthOptions.ISSUER,
+    //        audience: AuthOptions.AUDIENCE,
+    //        claims: claims,
+    //        expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(2)),
+    //        signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+    //var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+    // формируем ответ
+    var response = new
+    {
+        //access_token = encodedJwt,
+        username = person.Login
+    };
+
+    return Results.Json(response);
+});
+
+
+
+app.UseAuthentication();  
+app.UseAuthorization();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
