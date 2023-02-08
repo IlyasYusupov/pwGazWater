@@ -15,7 +15,6 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using pwGazWater.Data;
 
-
 namespace WpfChat
 {
     /// <summary>
@@ -23,6 +22,7 @@ namespace WpfChat
     /// </summary>
     public partial class MainWindow : Window
     {
+        User receiver;
         HubConnection connection;  // подключение для взаимодействия с хабом
         public MainWindow()
         {
@@ -32,28 +32,13 @@ namespace WpfChat
             
         }
 
-        // обработчик загрузки окна
-        private async void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // подключемся к хабу
-                await connection.StartAsync();
-                chatbox.Items.Add("Вы вошли в чат");
-                sendBtn.IsEnabled = true;
-            }
-            catch (Exception ex)
-            {
-                chatbox.Items.Add(ex.Message);
-            }
-        }
         // обработчик нажатия на кнопку
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
             try
             {
                 // отправка сообщения
-                await connection.InvokeAsync("Send", userTextBox.Text, messageTextBox.Text);
+                await connection.InvokeAsync("Send", CurrentUser.currentUser.Login, messageTextBox.Text, receiver.Login);
             }
             catch (Exception ex)
             {
@@ -63,7 +48,7 @@ namespace WpfChat
 
         private async void employeeList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            //receiver = (User)employeeList.SelectedItem;
+            receiver = (User)employeeList.SelectedItem;
             try
             {
                 connection = new HubConnectionBuilder()
@@ -72,14 +57,23 @@ namespace WpfChat
 
 
                 // регистрируем функцию Receive для получения данных
-                connection.On<string, string>("ReceiveMessage", (user, message) =>
+                connection.On<string, string, string>("ReceiveMessage", (user, message, receive) =>
                 {
-                    Dispatcher.Invoke(() =>
+                    if (user == receiver.Login && receive == CurrentUser.currentUser.Login || user == receive)
                     {
-                        var newMessage = $"{user}: {message}";
-                        chatbox.Items.Insert(0, newMessage);
-                    });
+                        Dispatcher.Invoke(() =>
+                        {
+                            var newMessage = $"{user}: {message}";
+                            chatbox.Items.Insert(0, newMessage);
+                        });
+                    }
+                    
                 });
+                // подключемся к хабу
+                await connection.StartAsync();
+                chatbox.Items.Clear();
+                chatbox.Items.Add("Вы вошли в чат");
+                sendBtn.IsEnabled = true;
             }
             catch (Exception ex)
             {

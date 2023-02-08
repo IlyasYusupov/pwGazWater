@@ -91,13 +91,27 @@ namespace pwGazWater.Data
             var database = client.GetDatabase("UserBaseGuz");
             var collection = database.GetCollection<User>("User");
             var list = collection.Find(x => true).ToList();
-            var users = new List<User>();
             foreach (var user in list)
             {
                 if (user.GetType().Name == "Customer" && user.Login == login)
                     return user;
             }
             return null;
+        }
+
+        public static List<Customer> FindAllCustomer()
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<User>("User");
+            var list = collection.Find(x => true).ToList();
+            var users = new List<Customer>();
+            foreach (var user in list)
+            {
+                if (user.GetType().Name == "Customer")
+                    users.Add((Customer)user);
+            }
+            return users;
         }
 
         public static List<User> FindAllEmployee(string login)

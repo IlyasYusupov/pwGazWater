@@ -5,21 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfChat"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="MainWindow" Height="450" Width="800" >
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
+
         <StackPanel Margin="4" >
-            <Label Content="Введите логин"/>
-            <TextBox x:Name="userTextBox" />
+            <Label Content="ЧАТ" HorizontalAlignment="Center"/>
             <Label Content="Введите сообщение"/>
             <TextBox x:Name="messageTextBox" />
             <Button x:Name="sendBtn" Content="Отправить" Click="Button_Click" IsEnabled="False" />
             <ListBox x:Name="chatbox" />
         </StackPanel>
-        <StackPanel Grid.Column="1">
+            <StackPanel Grid.Column="1">
+                <Label Content="РАБОТЯГИ" HorizontalAlignment="Center"/>
+
             <ListView Name="employeeList" MouseDoubleClick="employeeList_MouseDoubleClick">
                 <ListView.ItemTemplate>
                     <DataTemplate>
