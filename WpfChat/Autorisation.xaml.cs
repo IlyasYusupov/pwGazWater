@@ -41,7 +41,7 @@ namespace WpfChat
                     MessageBox.Show("Неправильный логин или пароль!");
                     txtLogin.Text = string.Empty;
                     txtPassword.Password = string.Empty;
-                }
+                }    
             }
         }
     }

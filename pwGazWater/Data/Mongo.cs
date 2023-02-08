@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver.GridFS;
 using pwGazWater.Data;
+using DnsClient;
 
 namespace pwGazWater.Data
 {
@@ -150,9 +151,8 @@ namespace pwGazWater.Data
             {
                 projects.Add(project);
             }
-            return projects;
+            return users;
         }
-
 
         public static List<User> FindAllPlanner()
         {
@@ -183,7 +183,5 @@ namespace pwGazWater.Data
             }
             return users;
         }
-
-
     }
 }

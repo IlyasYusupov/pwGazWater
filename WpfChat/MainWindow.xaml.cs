@@ -24,6 +24,7 @@ namespace WpfChat
     {
         User receiver;
         HubConnection connection;  // подключение для взаимодействия с хабом
+        User receiver;
         public MainWindow()
         {
             InitializeComponent();
