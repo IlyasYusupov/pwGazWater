@@ -61,7 +61,7 @@
                     </label>
                 </td>
                 <td> <input type="text" readonly class="text-muted mb-0" @bind-value=text1 /></td>
-                @if(text1 != null && text1 != string.Empty)
+                @if (text1 != null && text1 != string.Empty)
                 {
                     <td><input type="checkbox" @bind-value=checkBox></input></td>
                 }
@@ -73,7 +73,7 @@
                     </label>
                 </td>
                 <td> <input type="text" readonly class="text-muted mb-0" @bind-value=text2 /></td>
-                @if(text2 != null && text2 != string.Empty)
+                @if (text2 != null && text2 != string.Empty)
                 {
                     <td><input type="checkbox" @bind-value=checkBox></input></td>
                 }
@@ -124,28 +124,31 @@
             }
         </tbody>
     </table>
+    
+    <hr>
+    <div class="form-group">
+        <label>
+            Чат c @Receive.Login
+        </label>
+    </div>
+    <div class="form-group">
+        <label>
+            Message:
+            <input @bind="messageInput" size="50" />
+        </label>
+    </div>
+    <button @onclick="Send" disabled="@(!IsConnected)">Send</button>
 
-
-<div class="form-group">
-    <label>
-        Message:
-        <input @bind="messageInput" size="50" />
-    </label>
-</div>
-<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
-
-<hr>
-
-<ul id="messagesList">
-    @foreach (var message in messages)
-    {
-        <li>@message</li>
-    }
-</ul>
+    <ul id="messagesList">
+        @foreach (var message in messages)
+        {
+            <li>@message</li>
+        }
+    </ul>
 }
 @if (user.GetType().Name == "Planner")
-    {
-        <table class="table"> 
+{
+    <table class="table"> 
         <thead>
             <tr>
                 <th>Documents name</th>
@@ -154,20 +157,20 @@
             </tr>
         </thead>
         <tbody>
-                <tr>
-                    <td>
-                        <label>
+            <tr>
+                <td>
+                    <label>
                         Диаметр (мм) трубопровода и протяженность линейного объекта (м)
-                        </label>
-                    </td>
-                    @if(inputBlok1)
-                    {
-                        <td> <input type="text" readonly class="text-muted mb-0" @bind-value=text1 /></td>
-                    }
-                    else
-                    {
-                        <td> <input type="text" class="text-muted mb-0" @bind-value=text1 /></td>
-                    }
+                    </label>
+                </td>
+                @if (inputBlok1)
+                {
+                    <td> <input type="text" readonly class="text-muted mb-0" @bind-value=text1 /></td>
+                }
+                else
+                {
+                    <td> <input type="text" class="text-muted mb-0" @bind-value=text1 /></td>
+                }
                 <td> <button type="button" class="btn btn-info" @onclick="() => Edit(0)">Edit</button> </td>
                 <td>
                     <button type="button" class="btn btn-success" @onclick="() => AddToDB(0)">
@@ -175,20 +178,20 @@
                     </button>
                 </td>
             </tr>
-             <tr>
-                    <td>
-                        <label>
-                            Производительность БОС, м3/сут
-                        </label>
-                    </td>
-                    @if(inputBlok1)
-                    {
-                        <td> <input type="text" readonly class="text-muted mb-0" @bind-value=text2 /></td>
-                    }
-                    else
-                    {
-                        <td> <input type="text" class="text-muted mb-0" @bind-value=text2 /></td>
-                    }
+            <tr>
+                <td>
+                    <label>
+                        Производительность БОС, м3/сут
+                    </label>
+                </td>
+                @if (inputBlok1)
+                {
+                    <td> <input type="text" readonly class="text-muted mb-0" @bind-value=text2 /></td>
+                }
+                else
+                {
+                    <td> <input type="text" class="text-muted mb-0" @bind-value=text2 /></td>
+                }
                 <td> <button type="button" class="btn btn-info" @onclick="() => Edit(1)">Edit</button> </td>
                 <td>
                     <button type="button" class="btn btn-success" @onclick="() => AddToDB(1)">
@@ -197,13 +200,13 @@
                 </td>
             </tr>
 
-                <tr>
-                    <td>
-                        <label>
-                            кол.-во (шт) и производительность КНС (м3
-                            /ч)
-                        </label>
-                    </td>
+            <tr>
+                <td>
+                    <label>
+                        кол.-во (шт) и производительность КНС (м3
+                        /ч)
+                    </label>
+                </td>
                 @if (inputBlok1)
                 {
                     <td> <input type="text" readonly class="text-muted mb-0" @bind-value=text3 /></td>
@@ -219,34 +222,31 @@
                     </button>
                 </td>
             </tr>
-            </tbody>
-        </table>
-
-<div class="form-group">
-    <label>
-    </label>
-</div>
-<div class="form-group">
-    <label>
-        Message:
-        <input @bind="messageInput" size="50" />
-    </label>
-</div>
-<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
-
-<hr>
-
-<ul id="messagesList">
-    @foreach (var message in messages)
-    {
-        <li>@message</li>
-    }
-</ul>
-}
-else
-{
+        </tbody>
+    </table>
     
+    <hr>
+    <div class="form-group">
+        <label>
+            Чат c @Receive.Login
+        </label>
+    </div>
+    <div class="form-group">
+        <label>
+            Message:
+            <input @bind="messageInput" size="50" />
+        </label>
+    </div>
+    <button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+    <ul id="messagesList">
+        @foreach (var message in messages)
+        {
+            <li>@message</li>
+        }
+    </ul>
 }
+
 
 
 @code {
@@ -265,7 +265,7 @@ else
     bool inputBlok3 = true;
     private HubConnection? hubConnection;
     private List<string> messages = new List<string>();
-    private string? userInput;
+
     private string? messageInput;
 
     protected override async Task OnInitializedAsync()
@@ -320,49 +320,56 @@ else
         hubConnection.On<string, string, string>("ReceiveMessage", (user, message, receive) =>
         {
             var encodedMsg = $"{user}: {message}";
-            if(user == Receive.Login && servise.GetUser().Login == receive)
+            if((user == Receive.Login && servise.GetUser().Login == receive) || (user == servise.GetUser().Login && Receive.Login == receive))
             {   
                 messages.Add(encodedMsg);
                 InvokeAsync(StateHasChanged);
             }
-            
-
         });
 
         await hubConnection.StartAsync();
     }
-
+    private async Task Send()
+    {
+        if (hubConnection is not null)
+        {
             await hubConnection.SendAsync("Send", user.Login, messageInput, Receive.Login);
         }
     }
+
     User Receive;
     private void FindCustomer()
     {
         List<Customer> customers = Mongo.FindAllCustomer();
         List<Project> sad = new();
-        foreach(var i in customers)
+        foreach (var i in customers)
         {
             sad = i.ProjectGasification;
-            foreach(var j in sad)
+            foreach (var j in sad)
             {
-                if(j.Name == servise.GetProject().Name && j.Developer.Login == user.Login)
+                if(servise.GetUser().GetType().Name == "Developer")
                 {
-                    Receive = i;
-                    return;
+                    if (j.Name == servise.GetProject().Name && j.Developer.Login == user.Login)
+                    {
+                        Receive = i;
+                        return;
+                    }
+                }
+                else if(servise.GetUser().GetType().Name == "Planner")
+                {
+                    if (j.Name == servise.GetProject().Name && j.Planner.Login == user.Login)
+                    {
+                        Receive = i;
+                        return;
+                    }
                 }
             }
-
-    {
-        if (hubConnection is not null)
-        {
-            await hubConnection.SendAsync("Send", userInput, messageInput);
         }
     }
 
 
-
     public bool IsConnected =>
-        hubConnection?.State == HubConnectionState.Connected;
+    hubConnection?.State == HubConnectionState.Connected;
 
     public async ValueTask DisposeAsync()
     {
@@ -403,7 +410,7 @@ else
 
     void CheckDocs()
     {
-        
+
     }
 
 
@@ -414,7 +421,7 @@ else
         {
             servise.GetProject().Documentss.Remove(docss.Find(x => x.Name == PlannerDict[i]));
         }
-        switch(i)
+        switch (i)
         {
             case 0:
                 if (text1 != null && text1 != string.Empty)
@@ -445,7 +452,7 @@ else
                 break;
         }
 
-            servise.GetProject().Documentss.Add(newDocs);
+        servise.GetProject().Documentss.Add(newDocs);
 
 
         Mongo.ReplaceProject(servise.GetProject().Name, servise.GetProject());
@@ -465,9 +472,9 @@ else
                             loadedFile.Name);
             fs.UploadToDb(loadedFile, path);
             var newDoc = new DeveloperDocument(fileName, false)
-            {
-                FileName = loadedFile.Name
-            };
+                {
+                    FileName = loadedFile.Name
+                };
             servise.GetProject().Documents.Add(newDoc);
             Mongo.ReplaceProject(servise.GetProject().Name, servise.GetProject());
         }
@@ -485,21 +492,21 @@ else
 
     Dictionary<int, string> DeveloperDict = new Dictionary<int, string>()
     { {0, "Письмо-обращение на имя Президента, Премьер-Министра, Минстрой РТ" },
-      {1, "Задание на проектирование" },
-      {2, "Ситуационный план (утвержденныйисполкомом)" },
-      {3, "Технические условия на присоединение кгазораспределительной сети (№, дата,срок действий Технических условий)" },
-      {4, "Технический паспорт (план БТИ) объекта СКБ" },
-      {5, "Технический паспорт (план БТИ) существующей котельной" },
-      {6, "АКТ обследования объекта" },
-      {7, "Технические условия на сети электроснабжение, водоснабжения, водоотведения при установке БМК" },
-      {8, "Согласование посадки котельной" },
+        {1, "Задание на проектирование" },
+        {2, "Ситуационный план (утвержденныйисполкомом)" },
+        {3, "Технические условия на присоединение кгазораспределительной сети (№, дата,срок действий Технических условий)" },
+        {4, "Технический паспорт (план БТИ) объекта СКБ" },
+        {5, "Технический паспорт (план БТИ) существующей котельной" },
+        {6, "АКТ обследования объекта" },
+        {7, "Технические условия на сети электроснабжение, водоснабжения, водоотведения при установке БМК" },
+        {8, "Согласование посадки котельной" },
     };
 
     Dictionary<int, string> PlannerDict = new Dictionary<int, string>()
     {
-      {0, "Диаметр (мм) трубопровода и протяженность линейного объекта (м)" },
-      {1, "Сметная стоимость работ, тыс. руб." },
-      {2, "Срок разработки проектной документации,месяцев" },
+        {0, "Диаметр (мм) трубопровода и протяженность линейного объекта (м)" },
+        {1, "Сметная стоимость работ, тыс. руб." },
+        {2    , "Срок разработки проектной документации,месяцев" },
     };
 }
 

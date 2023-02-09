@@ -13,7 +13,7 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Margin="4" >
-            <Label Content="ЧАТ" HorizontalAlignment="Center"/>
+            <Label Name="chatWith" Content="ЧАТ" HorizontalAlignment="Center"/>
             <Label Content="Введите сообщение"/>
             <TextBox x:Name="messageTextBox" />
             <Button x:Name="sendBtn" Content="Отправить" Click="Button_Click" IsEnabled="False" />

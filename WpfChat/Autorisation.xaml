@@ -22,8 +22,7 @@
             <TextBox Name="txtLogin" Width="250" Height="30" HorizontalAlignment="Center" Margin="0,5,0,0"/>
             <TextBlock TextWrapping="Wrap" Text="Password" FontSize="20" Width="90" />
             <PasswordBox Name="txtPassword" Width="250" Height="30" HorizontalAlignment="Center" Margin="0,5,0,0"/>
-            <Button Name="Login" Content="Log in" Width="120" Height="30" FontSize="18" Margin="140,15,10,0 " HorizontalAlignment="Left" Click="Login_Click" />
-            <Button Name="Reg" Content="Registration" Width="120" Height="30" FontSize="18" Margin="10,-30,140,0 " HorizontalAlignment="Right" />
+            <Button x:Name="Login" Content="Log in" Width="120" Height="30" Margin="10" FontSize="18" Click="Login_Click" />
         </StackPanel>
     </Grid>
 </Window>

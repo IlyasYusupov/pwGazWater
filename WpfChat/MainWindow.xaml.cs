@@ -24,7 +24,6 @@ namespace WpfChat
     {
         User receiver;
         HubConnection connection;  // подключение для взаимодействия с хабом
-        User receiver;
         public MainWindow()
         {
             InitializeComponent();
@@ -50,35 +49,43 @@ namespace WpfChat
         private async void employeeList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             receiver = (User)employeeList.SelectedItem;
+            await DisposeAsync();
             try
             {
                 connection = new HubConnectionBuilder()
                 .WithUrl("https://localhost:7003/chat")
                 .Build();
 
-
                 // регистрируем функцию Receive для получения данных
                 connection.On<string, string, string>("ReceiveMessage", (user, message, receive) =>
                 {
-                    if (user == receiver.Login && receive == CurrentUser.currentUser.Login || user == receive)
+                    var newMessage = $"{user}: {message}";
+                    if ((user == receiver.Login && receive == CurrentUser.currentUser.Login) || (user == CurrentUser.currentUser.Login && receive == receiver.Login))
                     {
                         Dispatcher.Invoke(() =>
                         {
-                            var newMessage = $"{user}: {message}";
                             chatbox.Items.Insert(0, newMessage);
                         });
                     }
-                    
+
                 });
                 // подключемся к хабу
                 await connection.StartAsync();
                 chatbox.Items.Clear();
-                chatbox.Items.Add("Вы вошли в чат");
+                chatWith.Content = $"Вы вошли в чат с {receiver.Login}";
                 sendBtn.IsEnabled = true;
             }
             catch (Exception ex)
             {
                 chatbox.Items.Add(ex.Message);
+            }
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (connection is not null)
+            {
+                await connection.DisposeAsync();
             }
         }
     }

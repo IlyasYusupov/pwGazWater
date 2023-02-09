@@ -140,19 +140,7 @@ namespace pwGazWater.Data
             collection.ReplaceOne(z => z.Name == name, project);
         }
 
-        public static List<Project> FindAllPlannerProject(string login)
-        {
-            var client = new MongoClient();
-            var database = client.GetDatabase("UserBaseGuz");
-            var collection = database.GetCollection<Project>("project");
-            var list = collection.Find(x => x.Planner.Login == login).ToList();
-            var projects = new List<Project>();
-            foreach (var project in list)
-            {
-                projects.Add(project);
-            }
-            return users;
-        }
+
 
         public static List<User> FindAllPlanner()
         {

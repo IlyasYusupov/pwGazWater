@@ -34,7 +34,8 @@ namespace WpfChat
                 {
                     CurrentUser.currentUser = user;
                     MainWindow mw = new MainWindow();
-                    mw.ShowDialog();
+                    mw.Show();
+                    this.Close();
                 }
                 else
                 {
