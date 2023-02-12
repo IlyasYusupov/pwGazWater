@@ -22,14 +22,15 @@ namespace WpfChat
     /// </summary>
     public partial class MainWindow : Window
     {
-        User receiver;
+        User currentReceiver;
+        Project project;
         HubConnection connection;  // подключение для взаимодействия с хабом
         public MainWindow()
         {
             InitializeComponent();
-            employeeList.ItemsSource = Mongo.FindAllEmployee(CurrentUser.currentUser.Login);
+            //
+            projectList.ItemsSource = Mongo.FindProjectByCustomer(CurrentUser.currentUser.Login);
             // создаем подключение к хабу
-            
         }
 
         // обработчик нажатия на кнопку
@@ -38,7 +39,7 @@ namespace WpfChat
             try
             {
                 // отправка сообщения
-                await connection.InvokeAsync("Send", CurrentUser.currentUser.Login, messageTextBox.Text, receiver.Login);
+                await connection.InvokeAsync("Send", CurrentUser.currentUser.Login, messageTextBox.Text, currentReceiver.Login);
             }
             catch (Exception ex)
             {
@@ -48,7 +49,7 @@ namespace WpfChat
 
         private async void employeeList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            receiver = (User)employeeList.SelectedItem;
+            currentReceiver = (User)employeeList.SelectedItem;
             await DisposeAsync();
             try
             {
@@ -57,22 +58,25 @@ namespace WpfChat
                 .Build();
 
                 // регистрируем функцию Receive для получения данных
-                connection.On<string, string, string>("ReceiveMessage", (user, message, receive) =>
+                connection.On<string, string, string>("ReceiveMessage", (user, message, receiver) =>
                 {
                     var newMessage = $"{user}: {message}";
-                    if ((user == receiver.Login && receive == CurrentUser.currentUser.Login) || (user == CurrentUser.currentUser.Login && receive == receiver.Login))
+                    if ((user == currentReceiver.Login && receiver == CurrentUser.currentUser.Login) || (user == CurrentUser.currentUser.Login && receiver == currentReceiver.Login))
                     {
                         Dispatcher.Invoke(() =>
                         {
-                            chatbox.Items.Insert(0, newMessage);
+                            TextBlock tx = new TextBlock();
+                            tx.Style = (Style)Resources["forText"];
+                            tx.Width = 200;
+                            tx.Text = message;
+                            chatbox.Items.Insert(0, $"{user}: " + tx.Text);
                         });
                     }
-
                 });
                 // подключемся к хабу
                 await connection.StartAsync();
                 chatbox.Items.Clear();
-                chatWith.Content = $"Вы вошли в чат с {receiver.Login}";
+                chatWith.Content = $"Вы вошли в чат с {currentReceiver.Login}";
                 sendBtn.IsEnabled = true;
             }
             catch (Exception ex)
@@ -87,6 +91,17 @@ namespace WpfChat
             {
                 await connection.DisposeAsync();
             }
+        }
+
+        private void projectList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            project = (Project)projectList.SelectedItem;
+            var list = new List<User>()
+            {
+                project.Planner,
+                project.Developer
+            };
+            employeeList.ItemsSource = list;
         }
     }
 }

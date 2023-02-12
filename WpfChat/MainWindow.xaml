@@ -5,24 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfChat"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" >
+        Title="MainWindow" Height="450" Width="800" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <Style x:Key="forText" TargetType="TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
-            <ColumnDefinition/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="260"/>
+            <ColumnDefinition Width="10"/>
         </Grid.ColumnDefinitions>
-
-        <StackPanel Margin="4" >
-            <Label Name="chatWith" Content="ЧАТ" HorizontalAlignment="Center"/>
-            <Label Content="Введите сообщение"/>
-            <TextBox x:Name="messageTextBox" />
-            <Button x:Name="sendBtn" Content="Отправить" Click="Button_Click" IsEnabled="False" />
-            <ListBox x:Name="chatbox" />
+        <StackPanel Width="259" HorizontalAlignment="Center" Grid.Column="1">
+            <Label Content="ПРОЕКТЫ" HorizontalAlignment="Center" Height="25"/>
+            <ListView Name="projectList" MouseDoubleClick="projectList_MouseDoubleClick" Height="100" Width="240" HorizontalAlignment="Center">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <TextBlock Text="{Binding Name}" />
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
         </StackPanel>
-            <StackPanel Grid.Column="1">
-                <Label Content="РАБОТЯГИ" HorizontalAlignment="Center"/>
-
-            <ListView Name="employeeList" MouseDoubleClick="employeeList_MouseDoubleClick">
+        <StackPanel Grid.Column="2">
+            <Label Content="РАБОТЯГИ" HorizontalAlignment="Center" Height="25"/>
+            <ListView Name="employeeList" MouseDoubleClick="employeeList_MouseDoubleClick" Height="100" Width="240" HorizontalAlignment="Center">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
@@ -31,6 +42,14 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+        </StackPanel>
+        <StackPanel Grid.Column="3">
+            <Label Name="chatWith" Content="ЧАТ" HorizontalAlignment="Center"  Height="25" Width="218" HorizontalContentAlignment="Center"/>
+            <ListBox x:Name="chatbox" Height="100" Width="240" TextElement.FontStyle="Italic" HorizontalAlignment="Center"/>
+            <StackPanel HorizontalAlignment="Center" Width="240">
+                <TextBox x:Name="messageTextBox"  HorizontalAlignment="Left" Width="174" Height="27" TextWrapping="Wrap" />
+                <Button x:Name="sendBtn" Content="Отправить" Click="Button_Click" IsEnabled="False" Width="67" Height="27" HorizontalAlignment="Right" Margin="0,-27,0,0" />
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>

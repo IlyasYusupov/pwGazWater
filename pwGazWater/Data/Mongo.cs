@@ -51,7 +51,6 @@ namespace pwGazWater.Data
             collection.ReplaceOne(z => z.Login == login, user);
         }
 
-
         public static void UpgradeOne(string login, string seting, List<Project> item)
         {
             var client = new MongoClient();
@@ -59,15 +58,6 @@ namespace pwGazWater.Data
             var collection = database.GetCollection<User>("User");
             var update = Builders<User>.Update.Set(seting, item);
             collection.UpdateOne(x => x.Login == login, update);
-        }
-
-
-        public static void AddToDBPlanner(PlannerDocument doc)
-        {
-            var client = new MongoClient();
-            var database = client.GetDatabase("UserBaseGuz");
-            var collection = database.GetCollection<PlannerDocument>("PlannerDocument");
-            collection.InsertOne(doc);
         }
 
         public static void AddProjectToDB(Project project)
@@ -86,6 +76,25 @@ namespace pwGazWater.Data
             var one = collection.Find(x => x.Name == name).FirstOrDefault();
             return one;
         }
+
+        public static List<Project> FindProjectByCustomer(string login)
+        {
+            var client = new MongoClient();
+            var database = client.GetDatabase("UserBaseGuz");
+            var collection = database.GetCollection<Customer>("User");
+            var one = collection.Find(x => x.Login == login).FirstOrDefault();
+            var list = new List<Project>();
+            foreach (var item in one.ProjectWaterSupply)
+            {
+                list.Add(item);
+            }
+            foreach (var item in one.ProjectGasification)
+            {
+                list.Add(item);
+            }
+            return list;
+        }
+
         public static User FindCustomer(string login)
         {
             var client = new MongoClient();

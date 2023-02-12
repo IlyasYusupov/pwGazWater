@@ -7,7 +7,6 @@
 @inject SingletonServise servise
 @inject NavigationManager manager
 @using Microsoft.AspNetCore.SignalR.Client
-@inject NavigationManager Navigation
 @implements IAsyncDisposable
 
 @if (user.GetType().Name == "Customer")
@@ -124,11 +123,9 @@
             }
         </tbody>
     </table>
-    
-    <hr>
     <div class="form-group">
         <label>
-            Чат c @Receive.Login
+            Чат c @currentReceiver.Login
         </label>
     </div>
     <div class="form-group">
@@ -224,19 +221,17 @@
             </tr>
         </tbody>
     </table>
-    
-    <hr>
     <div class="form-group">
         <label>
-            Чат c @Receive.Login
+            Чат c @currentReceiver.Login
         </label>
     </div>
-    <div class="form-group">
-        <label>
-            Message:
-            <input @bind="messageInput" size="50" />
-        </label>
-    </div>
+        <div class="form-group">
+            <label>
+                Message:
+                <input @bind="messageInput" size="50" />
+            </label>
+        </div>
     <button @onclick="Send" disabled="@(!IsConnected)">Send</button>
 
     <ul id="messagesList">
@@ -245,6 +240,18 @@
             <li>@message</li>
         }
     </ul>
+    
+@*    <div class="chat-popup" id="myForm">
+      <form class="form-container">
+        <h1>Чат</h1>
+
+        <label for="msg"><b>Сообщение</b></label>
+        <textarea placeholder="Введите сообщение.." name="msg" required></textarea>
+
+        <button type="submit" class="btn">Отправить</button>
+        <button type="button" class="btn cancel" onclick="closeForm()">Закрыть</button>
+      </form>
+    </div>*@
 }
 
 
@@ -265,7 +272,6 @@
     bool inputBlok3 = true;
     private HubConnection? hubConnection;
     private List<string> messages = new List<string>();
-
     private string? messageInput;
 
     protected override async Task OnInitializedAsync()
@@ -314,13 +320,13 @@
         }
         FindCustomer();
         hubConnection = new HubConnectionBuilder()
-        .WithUrl(Navigation.ToAbsoluteUri("/chat"))
+        .WithUrl(manager.ToAbsoluteUri("/chat"))
         .Build();
 
-        hubConnection.On<string, string, string>("ReceiveMessage", (user, message, receive) =>
+        hubConnection.On<string, string, string>("ReceiveMessage", (user, message, receiver) =>
         {
             var encodedMsg = $"{user}: {message}";
-            if((user == Receive.Login && servise.GetUser().Login == receive) || (user == servise.GetUser().Login && Receive.Login == receive))
+            if ((user == currentReceiver.Login && servise.GetUser().Login == receiver) || (user == servise.GetUser().Login && currentReceiver.Login == receiver))
             {   
                 messages.Add(encodedMsg);
                 InvokeAsync(StateHasChanged);
@@ -333,11 +339,11 @@
     {
         if (hubConnection is not null)
         {
-            await hubConnection.SendAsync("Send", user.Login, messageInput, Receive.Login);
+            await hubConnection.SendAsync("Send", user.Login, messageInput, currentReceiver.Login);
         }
     }
 
-    User Receive;
+    User currentReceiver;
     private void FindCustomer()
     {
         List<Customer> customers = Mongo.FindAllCustomer();
@@ -347,26 +353,25 @@
             sad = i.ProjectGasification;
             foreach (var j in sad)
             {
-                if(servise.GetUser().GetType().Name == "Developer")
+                if (servise.GetUser().GetType().Name == "Developer")
                 {
                     if (j.Name == servise.GetProject().Name && j.Developer.Login == user.Login)
                     {
-                        Receive = i;
+                        currentReceiver = i;
                         return;
                     }
                 }
-                else if(servise.GetUser().GetType().Name == "Planner")
+                else if (servise.GetUser().GetType().Name == "Planner")
                 {
                     if (j.Name == servise.GetProject().Name && j.Planner.Login == user.Login)
                     {
-                        Receive = i;
+                        currentReceiver = i;
                         return;
                     }
                 }
             }
         }
     }
-
 
     public bool IsConnected =>
     hubConnection?.State == HubConnectionState.Connected;

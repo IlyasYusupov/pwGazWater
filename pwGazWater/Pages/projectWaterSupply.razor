@@ -1,12 +1,13 @@
 ﻿@page "/projectWaterSupply"
 
+@using Microsoft.AspNetCore.SignalR.Client;
 @using Microsoft.Extensions.Logging
 @using pwGazWater.Data
 
 @inject IWebHostEnvironment Environment
 @inject SingletonServise servise
 @inject NavigationManager manager
-
+@implements IAsyncDisposable
 
 @if(user.GetType().Name == "Customer")
 {
@@ -145,6 +146,33 @@
             }
         </tbody>
     </table>
+    <div class="form-group">
+        <label>
+            @if(currentReceiver.Login == null)
+            {
+                <label>Чат</label>
+            }
+            else
+            {
+                <label>Чат c @currentReceiver.Login</label>
+            }
+           
+        </label>
+    </div>
+    <div class="form-group">
+        <label>
+            Message:
+            <input @bind="messageInput" size="50" />
+        </label>
+    </div>
+    <button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+    <ul id="messagesList">
+        @foreach (var message in messages)
+        {
+            <li>@message</li>
+        }
+    </ul>
 }
 @if (user.GetType().Name == "Planner")
     {
@@ -268,6 +296,25 @@
             </tr>
             </tbody>
         </table>
+    <div class="form-group">
+        <label>
+            Чат c @currentReceiver.Login
+        </label>
+    </div>
+    <div class="form-group">
+        <label>
+            Message:
+            <input @bind="messageInput" size="50" />
+        </label>
+    </div>
+    <button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+    <ul id="messagesList">
+        @foreach (var message in messages)
+        {
+            <li>@message</li>
+        }
+    </ul>
 }
 
 
@@ -290,10 +337,14 @@
     bool inputBlok3 = true;
     bool inputBlok4 = true;
     bool inputBlok5 = true;
+    private HubConnection? hubConnection;
+    private List<string> messages = new List<string>();
+    private string? messageInput;
+    User currentReceiver;
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
-
+        FindCustomer();
         switch (servise.GetUser().GetType().Name)
         {
             case "Customer":
@@ -351,6 +402,71 @@
                     text5 = docss.Find(x => x.Name == PlannerDict[4]).Text;
                 }
                 break;
+        }
+        FindCustomer();
+        hubConnection = new HubConnectionBuilder()
+        .WithUrl(manager.ToAbsoluteUri("/chat"))
+        .Build();
+
+        hubConnection.On<string, string, string>("ReceiveMessage", (user, message, receiver) =>
+        {
+            var encodedMsg = $"{user}: {message}";
+            if ((user == currentReceiver.Login && servise.GetUser().Login == receiver) || (user == servise.GetUser().Login && currentReceiver.Login == receiver))
+            {
+                messages.Add(encodedMsg);
+                InvokeAsync(StateHasChanged);
+            }
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    private async Task Send()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("Send", user.Login, messageInput, currentReceiver.Login);
+        }
+    }
+
+    private void FindCustomer()
+    {
+        List<Customer> customers = Mongo.FindAllCustomer();
+        List<Project> sad = new();
+        foreach (var i in customers)
+        {
+            sad = i.ProjectWaterSupply;
+            foreach (var j in sad)
+            {
+                if (servise.GetUser().GetType().Name == "Developer")
+                {
+                    if (j.Name == servise.GetProject().Name && j.Developer.Login == servise.GetUser().Login)
+                    {
+                        currentReceiver = i;
+                        return;
+                    }
+                }
+                else if (servise.GetUser().GetType().Name == "Planner")
+                {
+                    if (j.Name == servise.GetProject().Name && j.Planner.Login == servise.GetUser().Login)
+                    {
+                        currentReceiver = i;
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+
+    public bool IsConnected =>
+    hubConnection?.State == HubConnectionState.Connected;
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
         }
     }
 

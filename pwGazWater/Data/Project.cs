@@ -27,7 +27,6 @@ namespace pwGazWater.Data
 
         public User Planner { get; set; }
 
-
         [BsonIgnoreIfNull]
         public List<DeveloperDocument> Documents = new List<DeveloperDocument>();
 
